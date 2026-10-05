@@ -1,0 +1,8 @@
+mid360_monitor_node:
+  ros__parameters:
+    lidar_topic: /livox/lidar
+    imu_topic: /livox/imu
+    report_period_s: 5.0
+    imu_gap_warn_ms: 15.0
+    scan_duration_min_ms: 50.0
+    scan_duration_max_ms: 150.0

@@ -1,0 +1,69 @@
+diff --git a/CMakeLists.txt b/CMakeLists.txt
+index be3040b..1435f84 100644
+--- a/CMakeLists.txt
++++ b/CMakeLists.txt
+@@ -5,17 +5,15 @@ if(NOT CMAKE_BUILD_TYPE)
+   set(CMAKE_BUILD_TYPE Release)
+ endif()
+ 
+-ADD_COMPILE_OPTIONS(-std=c++14)
+-ADD_COMPILE_OPTIONS(-std=c++14)
+-set(CMAKE_CXX_FLAGS "-std=c++14 -O3")
++set(CMAKE_CXX_FLAGS "-O3")
+ 
+ add_definitions(-DROOT_DIR=\"${CMAKE_CURRENT_SOURCE_DIR}/\")
+ 
+ set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -fexceptions")
+-set(CMAKE_CXX_STANDARD 14)
++set(CMAKE_CXX_STANDARD 17)
+ set(CMAKE_CXX_STANDARD_REQUIRED ON)
+ set(CMAKE_CXX_EXTENSIONS OFF)
+-set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++14 -pthread -std=c++0x -std=c++14 -fexceptions")
++set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -pthread -fexceptions")
+ set(CMAKE_POSITION_INDEPENDENT_CODE ON)
+ 
+ message("Current CPU archtecture: ${CMAKE_SYSTEM_PROCESSOR}")
+@@ -57,7 +55,7 @@ find_package(sensor_msgs REQUIRED)
+ find_package(std_msgs REQUIRED)
+ find_package(std_srvs REQUIRED)
+ find_package(visualization_msgs REQUIRED)
+-find_package(pcl_ros REQUIRED)
++find_package(tf2_ros REQUIRED)
+ find_package(pcl_conversions REQUIRED)
+ find_package(livox_ros_driver2 REQUIRED)
+ find_package(rosidl_default_generators REQUIRED)
+@@ -71,7 +69,7 @@ set(dependencies
+   std_msgs
+   std_srvs
+   visualization_msgs
+-  pcl_ros
++  tf2_ros
+   pcl_conversions
+   livox_ros_driver2
+ )
+diff --git a/config/mid360.yaml b/config/mid360.yaml
+index b940253..c8fd354 100644
+--- a/config/mid360.yaml
++++ b/config/mid360.yaml
+@@ -7,7 +7,7 @@
+         filter_size_map: 0.5
+         cube_side_length: 1000.0
+         runtime_pos_log_enable: false
+-        map_file_path: "./test.pcd"
++        map_file_path: "/home/h/lidar_ws/maps/fastlio_mid360.pcd"
+ 
+         common:
+             lid_topic:  "/livox/lidar"
+diff --git a/package.xml b/package.xml
+index 8c39e18..729bde8 100644
+--- a/package.xml
++++ b/package.xml
+@@ -25,7 +25,7 @@
+   <depend>sensor_msgs</depend>
+   <depend>common_interfaces</depend>
+   <depend>tf2</depend>
+-  <depend>pcl_ros</depend>
++  <depend>tf2_ros</depend>
+   <depend>pcl_conversions</depend>
+   <depend>livox_ros_driver2</depend>
+ 

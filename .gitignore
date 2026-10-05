@@ -1,0 +1,22 @@
+# colcon and Livox SDK build outputs
+/build/
+/install/
+/log/
+/sdk_build/
+/sdk_install/
+
+# Recorded sensor data and generated maps
+/bags/
+/maps/
+
+# Local editor caches and machine-specific settings
+/.vscode/
+
+# Upstream projects are restored from the pinned commits in README.md.
+/src/FAST_LIO/
+/src/Livox-SDK2/
+/src/livox_ros_driver2/
+
+# Python caches
+__pycache__/
+*.pyc
