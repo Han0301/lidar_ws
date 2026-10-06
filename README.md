@@ -179,3 +179,14 @@ ros2 topic echo /Odometry --field pose.pose.position
 ```
 
 仓库中的命令与参数来自当前本机配置；构建通过不代表雷达连接、时间同步或建图精度已经在其他机器上验证。
+
+## 对三个录包复跑测试
+
+完成工作空间构建后，将 `室内静止`、`室内闭环`、`室外闭环` 三个 bag 目录放在 `bags/` 下，关闭正在运行的 FAST-LIO2，然后运行：
+
+```bash
+cd ~/lidar_ws
+bash evaluation/run_all.sh
+```
+
+脚本会检查原始输入时间戳与 IMU 覆盖，再按原速回放并统计 FAST-LIO2 里程计。逐组命令、输出说明和已有结果见 [evaluation/README.md](evaluation/README.md) 与 [测试报告](evaluation/RESULTS_2026-10-06.md)。结果写入已忽略的 `evaluation/results/`，原始 bag 不会上传到仓库。

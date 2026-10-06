@@ -20,3 +20,6 @@
 # Python caches
 __pycache__/
 *.pyc
+
+# Offline evaluation outputs
+/evaluation/results/
