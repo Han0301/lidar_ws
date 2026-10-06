@@ -64,3 +64,35 @@ source install/setup.bash
 ```
 
 另外两包分别将路径和输出名换为 `bags/室内闭环` / `indoor_loop_timing.json` 与 `bags/室外闭环` / `outdoor_loop_timing.json`。三组现有录包的详细结果和判断边界见 `evaluation/TIMING_AUDIT_2026-10-06.md`。相邻 IMU 样本距离扫描边界只有几毫秒，**不等于**已测得 LiDAR–IMU 物理偏移。录包没有保存原始包的时间同步类型，不能单凭这些 JSON 把 `time_offset_lidar_to_imu` 判为零。
+
+## 时间偏移候选与隔离回放
+
+`estimate_motion_lag.py` 从相邻点云独立估计转动，并与原始 IMU 角速度比较。它需要系统 Python 的 NumPy 和 SciPy；输出的最佳平移是**有效时间窗**候选，不是设备时钟偏移。室内与室外各运行一次：
+
+```bash
+cd ~/lidar_ws
+source /opt/ros/jazzy/setup.bash
+source install/setup.bash
+/usr/bin/python3 evaluation/estimate_motion_lag.py \
+  bags/室内闭环 evaluation/results/indoor_motion_lag.json
+/usr/bin/python3 evaluation/estimate_motion_lag.py \
+  bags/室外闭环 evaluation/results/outdoor_motion_lag.json
+```
+
+用 `run_offset_playback.py` 在配置副本上比较 `0` 与 `+0.01 s`，每次使用不同的结果名和空闲 ROS Domain ID。它会临时开启 FAST-LIO2 的运行时间日志，关闭 RViz 和 PCD 保存，并备份、恢复源码目录的原有日志。运行时不要同时启动其他 FAST-LIO2 进程。下例是室内 `+10 ms` 一组；将偏移改为 `0.0` 并改用另一结果名、Domain ID 即可复跑基线：
+
+```bash
+cd ~/lidar_ws
+source /opt/ros/jazzy/setup.bash
+source install/setup.bash
+export LIDAR_WS="$PWD"
+export LIDAR_EVAL_RESULTS="$PWD/evaluation/results/offset_ab"
+export LIDAR_TIME_OFFSET_S=0.01
+/usr/bin/python3 evaluation/run_offset_playback.py \
+  bags/室内闭环 indoor_offset_10ms 195
+/usr/bin/python3 evaluation/summarize_odometry.py \
+  "$LIDAR_EVAL_RESULTS/indoor_offset_10ms/odometry.csv" \
+  "$LIDAR_EVAL_RESULTS/indoor_offset_10ms/odometry_summary.json"
+```
+
+室外组把录包换为 `bags/室外闭环`，结果名换为 `outdoor_offset_10ms`，并另选 Domain ID。四组测量数据、图和解释见 `evaluation/OFFSET_AB_2026-10-06.md`。主循环耗时来自 `fast_lio.log` 中末尾的累计 `ave total`，不含后续点云发布；没有轨迹真值时，首末间隔不能当作绝对定位精度。
