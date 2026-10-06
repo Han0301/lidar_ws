@@ -50,3 +50,17 @@ mkdir -p "$LIDAR_EVAL_RESULTS"
 - 回放启动或结束时监测节点的 `NO_DATA`、`START_UNKNOWN` 与临时接收间隔可能来自录包边界或播放调度；判断原始录制是否缺帧时，以 `*_inputs.json` 的传感器时间戳检查为准。
 
 逐项证据位于每组结果目录：`odometry.csv`、`odometry_summary.json`、`monitor.log`、`fast_lio.log`、`player.log` 和 `run_status.json`。三组轨迹图为 `trajectories.png`。不同机器的线程调度可能使里程计末值略有差异，复测时应比较量级、消息覆盖和异常位置。
+
+## 时间戳对齐审计
+
+`audit_bag_timing.py` 直接读取 MCAP，核对点云 `header.stamp`、`timebase`、逐点偏移、IMU 时间戳，以及每帧扫描起终点附近的 IMU 样本。它也统计 MCAP 录制时间与消息时间戳的差异。审计不会改 FAST-LIO2 参数或原始录包。以室内静止包为例：
+
+```bash
+cd ~/lidar_ws
+source /opt/ros/jazzy/setup.bash
+source install/setup.bash
+/usr/bin/python3 evaluation/audit_bag_timing.py \
+  bags/室内静止 evaluation/results/indoor_static_timing.json
+```
+
+另外两包分别将路径和输出名换为 `bags/室内闭环` / `indoor_loop_timing.json` 与 `bags/室外闭环` / `outdoor_loop_timing.json`。三组现有录包的详细结果和判断边界见 `evaluation/TIMING_AUDIT_2026-10-06.md`。相邻 IMU 样本距离扫描边界只有几毫秒，**不等于**已测得 LiDAR–IMU 物理偏移。录包没有保存原始包的时间同步类型，不能单凭这些 JSON 把 `time_offset_lidar_to_imu` 判为零。
