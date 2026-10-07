@@ -72,7 +72,7 @@ def run(bag, case, domain):
                          f"config_path:={directory}", "config_file:=mid360.yaml",
                          "use_sim_time:=true", "rviz:=false"],
             "monitor": ["ros2", "launch", "mid360_monitor", "mid360_monitor.launch.py"],
-            "planner_audit": [sys.executable, str(SCRIPT_DIR / "run_planner_audit.py"), str(directory / "planning")],
+            "planner_audit": [sys.executable, str(SCRIPT_DIR / ("run_paired_audit.py" if env.get("LIDAR_EVAL_PAIRED") == "1" else "run_planner_audit.py")), str(directory / "planning")],
             "perception": ["ros2", "launch", "lidar_nav2_bringup", "perception.launch.py"],
             "costmap": ["ros2", "launch", "lidar_nav2_bringup", "bag_costmap.launch.py"],
             "perception_recorder": [sys.executable, str(SCRIPT_DIR / "record_perception.py"), str(directory / "perception")],

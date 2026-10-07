@@ -13,3 +13,7 @@ if [[ -d "$LIDAR_NAV_WORKSPACE/.deps/nav2/opt/ros/jazzy" ]]; then
   export PYTHONPATH="$LIDAR_NAV_PREFIX/lib/python3.12/site-packages:$LIDAR_NAV_ROOT/usr/lib/python3/dist-packages:${PYTHONPATH:-}"
   export PATH="$LIDAR_NAV_PREFIX/bin:$PATH"
 fi
+
+if [[ -f "$LIDAR_NAV_WORKSPACE/.deps/ground_consistency/install/lib/libnav2_ground_consistency_costmap_plugin.so" ]]; then
+  source "$LIDAR_NAV_WORKSPACE/.deps/ground_consistency/install/local_setup.bash"
+fi

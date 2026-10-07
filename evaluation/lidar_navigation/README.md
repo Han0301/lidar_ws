@@ -94,7 +94,7 @@ ROS_DOMAIN_ID=220 python3 evaluation/lidar_navigation/run_simulation.py
 - [PCL 聚类](https://pointclouds.org/documentation/tutorials/cluster_extraction.html)：体素、平面拟合与欧氏聚类。
 - [Patchwork++](https://github.com/url-kaist/patchwork-plusplus)：地面分割核心，固定提交和 BSD 许可证见 vendor/patchworkpp/UPSTREAM.md。
 - [Autoware 地面分割](https://autowarefoundation.github.io/autoware_universe/latest/perception/autoware_ground_segmentation/docs/scan-ground-filter/)：参考预处理、地面与非地面职责划分；其固定车体假设不直接套用到手持数据。
-- [Nav2 地形与地面一致性方案](https://docs.nav2.org/jazzy/tutorials/general_tutorials/navigation2_with_ground_consistency_layer/navigation2_with_ground_consistency_layer/)：参考局部地面高度与地面/非地面证据融合，作为复杂地形的后续候选；本次没有集成或验证该外部插件。
+- [Nav2 地形与地面一致性方案](https://docs.nav2.org/jazzy/tutorials/general_tutorials/navigation2_with_ground_consistency_layer/navigation2_with_ground_consistency_layer/)：参考局部地面高度与地面/非地面证据融合，作为复杂地形的后续候选；候选配置通过固定版本的外部插件与本地补丁集成；默认仍使用原生体素地图。插件回归与户外对照分别验证，不能将插件自身的地面证据规则当作地形通行真值。
 - [Nav2 VoxelLayer](https://docs.nav2.org/jazzy/configuration_and_development/configuration_guide/core_servers/costmap_2d/costmap_plugins/voxel/)：使用标准标记、射线清除与膨胀接口。
 
 运行后可在本机结果目录检查实际输出。场地数据、图片和实测报告默认不上传远程仓库。
@@ -108,3 +108,64 @@ python3 evaluation/lidar_navigation/run_navigation_bag.py bags/室外闭环 outd
 ```
 
 规划测试保存各次起终点、时间、地图快照与结果；成功回放不等于全部规划成功。本次未部署实车、未验证真实人体识别精度，也没有独立轨迹或地图真值。
+
+
+## 地面证据候选地图
+
+候选支路用于检查原生三维射线无法及时清除的障碍残留。按 [Nav2 官方教程](https://docs.nav2.org/jazzy/tutorials/general_tutorials/navigation2_with_ground_consistency_layer/navigation2_with_ground_consistency_layer/)接入 [DFKI 地面一致性插件](https://github.com/dfki-ric/nav2_ground_consistency_costmap_plugin)，固定提交 `41cec620efba6c370dccfc59a6ec1134775ff48a`，上游 BSD 许可证保留在依赖目录。本地补丁为 `patches/ground_consistency.patch`。
+
+```text
+同一可信感知流
+  ├─ /perception/clearing → ray_layer（只清除真实终点）
+  └─ /perception/ground + /perception/obstacles → ground_consistency
+                                                          ↓
+                                                     inflation_layer
+                                                          ↓
+                                                       NavFn
+```
+
+自由空间需要地面证据支持；证据衰减本身产生未知，新出现的非地面点立即参与障碍判断。旧地面高度仅在其证据仍足够时参与局部/邻域判断；输入停止时不衰减。补丁同时保留前置地图层的致命占用。相对于上游默认值，候选 YAML 使用有上限的证据积累和更短的障碍记忆；这些参数需要结合实际传感器密度与地图更新频率评估。
+
+先构建候选依赖，再加载环境：
+
+```bash
+cd ~/lidar_ws
+bash scripts/build_ground_consistency.sh
+source scripts/setup_lidar_nav.sh
+```
+
+在已运行的感知回放旁启动候选规划器：
+
+```bash
+ros2 launch lidar_nav2_bringup bag_planner.launch.py params:="$PWD/src/lidar_nav2_bringup/config/bag_planner_ground.yaml"
+```
+
+默认启动仍使用 `bag_planner.yaml`。候选配置的高度、圆形轮廓、膨胀参数是评估假设，必须按实际底盘重新设置；复杂地形、负障碍、定位漂移和操作者身份过滤尚未通过完整验证。
+
+## 同源对照与地图回归
+
+`run_paired_audit.py` 等待回放时钟、导航位姿和 `odom→nav_base` 可用后启动两个名字空间的规划器。`dual_planner_test.py` 检查代价地图生命周期已激活，并确认滚动地图覆盖当前位姿；每组暂停回放后使用相同显式起终点、保存两份原始代价地图和路径。两份地图共用传感器流，但每次服务快照并非规划器内部地图的逐字复制。
+
+```bash
+LIDAR_EVAL_PAIRED=1 python3 evaluation/lidar_navigation/run_navigation_bag.py bags/室外闭环 outdoor_paired 223
+```
+
+ROS 仿真时钟暂停时，动作结果中的 `planning_time` 可能为零，不能用作真实计算耗时。评估另存单调墙钟的动作请求至结果回调延迟；它包括通信、执行器调度与客户端请求次序影响，不是纯规划算法耗时；不能据此证明算法速度提升。
+
+`layer_regression` 使用实际 Nav2 插件构造六类确定输入：持续低障碍、离开后地面重新出现、原位置没有观测、输入停止、弱地面证据、已累积地面上新出现低障碍。候选插件断言失败将返回非零；它是组件回归，不是人体识别或真实通行性评估。
+
+```bash
+cmake -S evaluation/lidar_navigation/layer_regression -B evaluation/lidar_navigation/results/tools/layer_regression -DCMAKE_BUILD_TYPE=Release
+cmake --build evaluation/lidar_navigation/results/tools/layer_regression -j2
+evaluation/lidar_navigation/results/tools/layer_regression/layer_regression evaluation/lidar_navigation/results/layer_guarded.csv
+```
+
+## 演示视频来源
+
+`export_demo.py` 将保存的点云、原始地图、规划路径和仿真里程计重绘为 MP4。视频明确标注录包快照、抽样时间和理想仿真边界，不将手持路线动画当作机器人执行结果。需要 Python NumPy、Pillow、带 H.264 MP4 编码支持的 OpenCV，以及 Noto Sans CJK 字体；字体路径位于脚本 `FONT` 常量。
+
+```bash
+python3 evaluation/lidar_navigation/export_demo.py --paired evaluation/lidar_navigation/results/outdoor_paired --perception evaluation/lidar_navigation/results/outdoor_paired --simulation evaluation/lidar_navigation/results/simulation_acceptance --output evaluation/lidar_navigation/results/demo
+```
+
+输出包含地图对照视频、地面与障碍点云视频、理想仿真轨迹视频，以及解码校验元数据。场地视频和实测数据保持本地保存，公开发布需单独授权。

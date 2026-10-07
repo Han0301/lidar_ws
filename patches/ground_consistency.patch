@@ -1,0 +1,103 @@
+diff --git a/include/nav2_ground_consistency_costmap_plugin/ground_consistency_layer.hpp b/include/nav2_ground_consistency_costmap_plugin/ground_consistency_layer.hpp
+index 03c44ba..5f050b2 100644
+--- a/include/nav2_ground_consistency_costmap_plugin/ground_consistency_layer.hpp
++++ b/include/nav2_ground_consistency_costmap_plugin/ground_consistency_layer.hpp
+@@ -83,6 +83,7 @@ private:
+   // Evidence model
+   float ground_inc_{1.0f};
+   float nonground_inc_{1.5f};
++  float ground_free_thresh_ = 2.0f;
+   float ground_decay_{0.80f};
+   float nonground_decay_{0.93f};
+ 
+diff --git a/src/ground_consistency_layer.cpp b/src/ground_consistency_layer.cpp
+index 4c86012..48c52ec 100644
+--- a/src/ground_consistency_layer.cpp
++++ b/src/ground_consistency_layer.cpp
+@@ -63,6 +63,7 @@ void GroundConsistencyLayer::onInitialize()
+   declareParameter("tf_timeout", rclcpp::ParameterValue(0.1));
+   declareParameter("ground_inc", rclcpp::ParameterValue(1.0));
+   declareParameter("nonground_inc", rclcpp::ParameterValue(1.5));
++  declareParameter("ground_free_thresh", rclcpp::ParameterValue(2.0));
+   declareParameter("ground_decay", rclcpp::ParameterValue(0.80));
+   declareParameter("nonground_decay", rclcpp::ParameterValue(0.93));
+   declareParameter("nonground_occ_thresh", rclcpp::ParameterValue(6.0));
+@@ -89,6 +90,7 @@ void GroundConsistencyLayer::onInitialize()
+ 
+   getFloatParam(name_ + ".ground_inc", ground_inc_);
+   getFloatParam(name_ + ".nonground_inc", nonground_inc_);
++  getFloatParam(name_ + ".ground_free_thresh", ground_free_thresh_);
+   getFloatParam(name_ + ".ground_decay", ground_decay_);
+   getFloatParam(name_ + ".nonground_decay", nonground_decay_);
+   getFloatParam(name_ + ".nonground_occ_thresh", nonground_occ_thresh_);
+@@ -293,6 +295,8 @@ void GroundConsistencyLayer::updateBounds(
+       continue;
+     }
+ 
++    const bool obstacle_observed_this_cycle = cell.nonground_count_frame > 0;
++
+     // Integrate frame counts into scores (accumulate)
+     if (cell.ground_count_frame > 0) {
+       ground_points_this_cycle_ += cell.ground_count_frame;
+@@ -349,12 +353,16 @@ void GroundConsistencyLayer::updateBounds(
+ 
+     bool make_lethal = false;
+     bool make_free = false;
+-    if (ng >= nonground_occ_thresh_ && p_occ > nonground_prob_thresh_) {
++    // Fresh non-ground returns must not disappear behind accumulated floor evidence.
++    if (obstacle_observed_this_cycle ||
++      (ng >= nonground_occ_thresh_ && p_occ > nonground_prob_thresh_))
++    {
+       double ground_avg = 0.0;
+       bool ground_found = false;
+ 
+       // Tier 1: Local ground data
+-      if (cell.ground_height_count > 0u) {
++      if (g >= ground_free_thresh_ && cell.ground_height_count > 0u)
++      {
+         ground_avg = cell.ground_height_sum / static_cast<double>(cell.ground_height_count);
+         ground_found = true;
+       }
+@@ -368,7 +376,9 @@ void GroundConsistencyLayer::updateBounds(
+           for (int dy = -r; dy <= r; ++dy) {
+             if (dx == 0 && dy == 0) continue;
+             auto n_it = cells_.find(packXY(xi + dx, yi + dy));
+-            if (n_it != cells_.end() && n_it->second.ground_height_count > 0u) {
++            if (n_it != cells_.end() && n_it->second.ground_height_count > 0u &&
++                n_it->second.ground_score >= ground_free_thresh_)
++            {
+               sum_z += n_it->second.ground_height_sum /
+                        static_cast<double>(n_it->second.ground_height_count);
+               count++;
+@@ -405,11 +415,12 @@ void GroundConsistencyLayer::updateBounds(
+       cost = nav2_costmap_2d::FREE_SPACE;
+     }
+ 
+-    // Discretize partial costs to FREE if enabled
+-    if (discretize_costs_ && 
+-        cost != nav2_costmap_2d::LETHAL_OBSTACLE && 
+-        cost != nav2_costmap_2d::FREE_SPACE) {
+-      cost = nav2_costmap_2d::FREE_SPACE;
++    // Require supporting floor evidence even when the occupancy ratio is zero.
++    if (discretize_costs_ && !make_lethal && !make_free)
++    {
++      // Fading evidence alone establishes uncertainty, not traversability.
++      cost = g >= ground_free_thresh_ ? nav2_costmap_2d::FREE_SPACE :
++        nav2_costmap_2d::NO_INFORMATION;
+     }
+ 
+     cell.computed_cost = cost;
+@@ -602,7 +613,12 @@ void GroundConsistencyLayer::updateCosts(
+       WorldKey key = worldKey(wx, wy, res);
+       auto it = cells_.find(key);
+       if (it != cells_.end()) {
+-        master_array[j * size_x + i] = it->second.computed_cost;
++        // Respect lethal costs from an earlier trusted map layer.
++        const auto index = j * size_x + i;
++        if (master_array[index] != nav2_costmap_2d::LETHAL_OBSTACLE)
++        {
++          master_array[index] = it->second.computed_cost;
++        }
+         cells_updated_this_cycle_++;
+       }
+     }
