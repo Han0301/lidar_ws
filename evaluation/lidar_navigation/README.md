@@ -22,6 +22,81 @@ source scripts/setup_lidar_nav.sh
 
 当前电脑的 Nav2 运行依赖位于已忽略的 `.deps/nav2`，环境脚本会自动加入路径；其他电脑可通过上面的 `rosdep` 安装。依赖不是源码仓库内容。
 
+## 地面证据地图的一体启动入口
+
+每个终端加载同一环境并使用相同的通信域：
+
+```bash
+cd /home/h/lidar_ws
+source scripts/setup_lidar_nav.sh
+export ROS_DOMAIN_ID=0
+```
+
+在 FAST-LIO2 和录包回放提供数据时，用一条命令启动感知、桥接、地面证据规划地图、生命周期管理、启动门控和一个 RViz 窗口：
+
+```bash
+ros2 launch lidar_nav2_bringup ground_navigation.launch.py
+```
+
+这个入口默认使用 `bag_planner_ground.yaml`，加载 `ray_layer + ground_consistency + inflation_layer`，启动顺序由 `nav2_startup_gate` 等待有效时钟、位姿与 TF 后激活。它复用两个独立 launch，并关闭各自的 RViz，只打开 `rviz/ground_navigation.rviz`：地面点绿色、障碍点红色，同时显示 `/global_costmap/costmap`、`/plan` 和 `/path`。不需要界面时使用 `rviz:=false`。栅格仍是 12×12 m 的滚动候选地图，复杂地形通行性尚未完整验证。
+
+FAST-LIO2 和回放分别在另外两个终端启动：
+
+```bash
+# FAST-LIO2
+ros2 launch fast_lio mapping.launch.py use_sim_time:=true rviz:=false
+
+# 开始回放；先启动上述处理节点
+ros2 bag play /home/h/lidar_ws/bags/室外闭环 --clock 100
+```
+
+候选地图依赖本机已构建的地面一致性插件；新部署机器先运行 `scripts/build_ground_consistency.sh`，然后重新加载环境脚本。该一体入口不能与独立 `nav2.launch.py`、`lidar_perception/perception.launch.py` 或旧跨包 `perception.launch.py` 同时启动，否则会重复发布相同话题和 TF。
+
+## 两个包的独立启动入口
+
+每个终端先执行下面的环境命令，使用相同的 ROS 通信域：
+
+```bash
+cd /home/h/lidar_ws
+source scripts/setup_lidar_nav.sh
+export ROS_DOMAIN_ID=223
+```
+
+先启动 FAST-LIO2，再分别启动两个包，最后开始回放：
+
+```bash
+# 终端一：FAST-LIO2
+ros2 launch fast_lio mapping.launch.py use_sim_time:=true rviz:=false
+
+# 终端二：桥接 + Nav2 规划服务器及其滚动代价地图
+ros2 launch lidar_nav2_bringup nav2.launch.py rviz:=true
+
+# 终端三：仅感知节点
+ros2 launch lidar_perception perception.launch.py rviz:=true
+
+# 终端四：原始点云、IMU 与仿真时钟
+ros2 bag play /home/h/lidar_ws/bags/室外闭环 --clock 100
+```
+
+`nav2.launch.py` 启动 `lio_nav_bridge`、`planner_server`、生命周期管理器和 `nav2_startup_gate`。启动门控节点等待非零时钟、近期 `/nav/odom` 以及同一时间戳的 `odom→nav_base` TF，再请求激活规划服务器，避免录包时钟从零跳到绝对时间后触发初始化超时。规划服务器内部管理 `/global_costmap`，沿用 `bag_planner.yaml` 的 12×12 m 滚动观测地图。此入口用于录包路径规划，没有底盘控制器或运动仿真；感知节点由另一个入口独立启动。默认关闭 RViz，`rviz:=true` 打开对应视图。原有跨包 `lidar_nav2_bringup/perception.launch.py` 保留为兼容入口，不能和这两个入口重复启动。
+
+桥接依赖初始化 IMU 和 FAST-LIO2 位姿；感知依赖桥接提供的同一扫描时刻 TF。数据未就绪时，门控节点每五秒报告等待原因；只有收到有效输入后才开始激活地图。默认配置使用仿真时间，在线雷达需要同时调整 `bridge.yaml`、`perception.yaml`、`bag_planner.yaml` 和 `bringup.yaml` 的 `use_sim_time`。修改源码 YAML 后重新安装对应包。
+
+| 可视化配置文件 | 固定坐标系 | 主要内容 |
+| --- | --- | --- |
+| `src/lidar_perception/rviz/perception.rviz` | `odom` | 绿色地面、红色障碍、聚类框；可勾选真实清除终点与删除区域 |
+| `src/lidar_nav2_bringup/rviz/navigation.rviz` | `odom` | `/global_costmap/costmap`、绿色 `/plan`、蓝色 `/path`、`/nav/odom` |
+
+配置安装到 `install/share/<包名>/rviz/`。两份视图均跟随 `nav_base`，点云订阅采用 Best Effort，与感知发布端兼容。`/path` 是 FAST-LIO2 已走过的轨迹，`/plan` 是 Nav2 的规划路径。规划服务器等待 `/compute_path_to_pose` 动作请求；仅打开 RViz 不会自动产生路径，这两个视图没有添加向未启动的导航执行器发送目标的工具。
+
+如需用已有评估工具发出规划请求，可在回放开始后另开同一通信域的终端运行：
+
+```bash
+python3 evaluation/lidar_navigation/test_bag_planner.py --output /tmp/lidar_plan_view
+```
+
+该工具积累回放位姿，尝试向距离当前位置超过 1.5 m 的历史位置规划；只有轨迹运动量、已观测地图和规划结果满足条件时，绿色路径才会出现。结果保存在指定目录。它只请求规划，不发送速度。
+
 启动原有 FAST-LIO2 后，再启动感知支路：
 
 ```bash

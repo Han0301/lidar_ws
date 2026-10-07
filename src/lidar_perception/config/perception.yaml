@@ -1,19 +1,23 @@
+# 感知参数：点云分类在调平坐标中完成，障碍高度相对实测参考地面
 lidar_perception:
   ros__parameters:
-    use_sim_time: true
-    input_topic: /cloud_registered_body
-    output_frame: perception_sensor
-    min_range: 0.45
-    max_range: 15.0
-    voxel_size: 0.10
-    ground_method: patchwork
-    ground_distance: 0.08
-    ground_guard_distance: 0.16
-    obstacle_min_height: 0.12
-    obstacle_max_height: 2.50
-    cluster_tolerance: 0.30
-    cluster_min_points: 6
-    cluster_max_points: 30000
-    input_timeout_s: 0.6
-    operator_region_timeout_s: 0.3
-    # Empty until operator identities and sensor mounting are verified.
+    use_sim_time: true # 使用 /clock 消息时间，与回放或仿真保持一致
+    input_topic: /cloud_registered_body # FAST-LIO2 输出的 body 坐标系去畸变点云
+    output_frame: perception_sensor # 感知输出的调平坐标系，由桥接节点发布对应 TF
+    min_range: 0.45 # 输入点距 body 原点的最小三维距离（m）
+    max_range: 15.0 # 输入点距 body 原点的最大三维距离（m）
+    voxel_size: 0.10 # 分类点云降采样的体素边长（m），不替换射线清除终点
+    ground_method: patchwork # 地面分类方法，可选 patchwork 或 plane
+    ground_distance: 0.08 # 参考平面内点距离阈值（m）
+    ground_guard_distance: 0.16 # 保护参考地面的距离带（m），约束局部地面分类
+    obstacle_min_height: 0.12 # 非地面点相对参考地面的最低高度（m）
+    obstacle_max_height: 2.50 # 非地面点相对参考地面的最高高度（m）
+    cluster_tolerance: 0.30 # 障碍点欧式聚类的邻域距离（m）
+    cluster_min_points: 6 # 生成目标包围框所需的最少簇点数，不过滤地图障碍输入
+    cluster_max_points: 30000 # 生成目标包围框允许的最多簇点数
+    input_timeout_s: 0.6 # 输入接收超时（墙钟 s），用于诊断或启动门控
+    operator_region_timeout_s: 0.3 # 排除区域与点云时间戳允许的最大差值（s）
+    # 未验证持机者身份和安装几何前，不默认配置排除区域
+rviz_perception:
+  ros__parameters:
+    use_sim_time: true # 使用 /clock 消息时间，与回放或仿真保持一致

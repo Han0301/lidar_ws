@@ -1,0 +1,131 @@
+# RViz 显示配置，话题需与发布端一致，点云颜色仅用于区分输出
+Panels:
+- Class: rviz_common/Displays
+  Name: Displays
+- Class: rviz_common/Views
+  Name: Views
+Visualization Manager:
+  Class: ''
+  Enabled: true
+  Name: root
+  Global Options:
+    Fixed Frame: odom # 统一将显示数据变到此坐标系
+    Frame Rate: 20
+    Background Color: 35; 35; 35
+  Displays:
+  - Class: rviz_default_plugins/Grid
+    Name: Grid
+    Enabled: true
+    Cell Size: 1
+    Plane Cell Count: 30
+    Color: 90; 90; 90
+  - Class: rviz_default_plugins/TF
+    Name: TF
+    Enabled: true
+    Show Names: false
+    Show Axes: true
+    Show Arrows: false
+    Marker Scale: 0.25
+  - Class: rviz_default_plugins/PointCloud2
+    Name: Ground
+    Enabled: true
+    Topic:
+      Value: /perception/ground # 此显示项订阅的数据话题
+      Depth: 5
+      History Policy: Keep Last
+      Reliability Policy: Best Effort
+      Durability Policy: Volatile
+    Alpha: 1
+    Color Transformer: FlatColor
+    Color: 80; 220; 100
+    Position Transformer: XYZ
+    Style: Flat Squares
+    Size (m): 0.06
+    Size (Pixels): 3
+    Decay Time: 0
+    Use Fixed Frame: true
+  - Class: rviz_default_plugins/PointCloud2
+    Name: Obstacles
+    Enabled: true
+    Topic:
+      Value: /perception/obstacles # 此显示项订阅的数据话题
+      Depth: 5
+      History Policy: Keep Last
+      Reliability Policy: Best Effort
+      Durability Policy: Volatile
+    Alpha: 1
+    Color Transformer: FlatColor
+    Color: 255; 80; 60
+    Position Transformer: XYZ
+    Style: Flat Squares
+    Size (m): 0.06
+    Size (Pixels): 3
+    Decay Time: 0
+    Use Fixed Frame: true
+  - Class: rviz_default_plugins/PointCloud2
+    Name: Clearing endpoints
+    Enabled: false
+    Topic:
+      Value: /perception/clearing # 此显示项订阅的数据话题
+      Depth: 5
+      History Policy: Keep Last
+      Reliability Policy: Best Effort
+      Durability Policy: Volatile
+    Alpha: 1
+    Color Transformer: FlatColor
+    Color: 80; 160; 255
+    Position Transformer: XYZ
+    Style: Flat Squares
+    Size (m): 0.06
+    Size (Pixels): 3
+    Decay Time: 0
+    Use Fixed Frame: true
+  - Class: rviz_default_plugins/PointCloud2
+    Name: Removed region
+    Enabled: false
+    Topic:
+      Value: /perception/operator_removed # 此显示项订阅的数据话题
+      Depth: 5
+      History Policy: Keep Last
+      Reliability Policy: Best Effort
+      Durability Policy: Volatile
+    Alpha: 1
+    Color Transformer: FlatColor
+    Color: 230; 100; 255
+    Position Transformer: XYZ
+    Style: Flat Squares
+    Size (m): 0.06
+    Size (Pixels): 3
+    Decay Time: 0
+    Use Fixed Frame: true
+  - Class: rviz_default_plugins/MarkerArray
+    Name: Cluster boxes
+    Enabled: true
+    Marker Topic:
+      Value: /perception/markers # 此显示项订阅的数据话题
+      Depth: 5
+      History Policy: Keep Last
+      Reliability Policy: Reliable
+      Durability Policy: Volatile
+  Tools:
+  - Class: rviz_default_plugins/Interact
+  - Class: rviz_default_plugins/MoveCamera
+  - Class: rviz_default_plugins/Select
+  - Class: rviz_default_plugins/FocusCamera
+  - Class: rviz_default_plugins/Measure
+  Views:
+    Current:
+      Class: rviz_default_plugins/Orbit
+      Name: Current View
+      Target Frame: nav_base # 视角跟随的参考坐标系
+      Distance: 12
+      Pitch: 0.65
+      Yaw: 0.75
+      Focal Point:
+        X: 0
+        Y: 0
+        Z: 0
+Window Geometry:
+  Width: 1280
+  Height: 800
+  Hide Left Dock: false

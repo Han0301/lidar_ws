@@ -1,0 +1,129 @@
+# RViz 显示配置，话题需与发布端一致，点云颜色仅用于区分输出
+Panels:
+- Class: rviz_common/Displays
+  Name: Displays
+- Class: rviz_common/Views
+  Name: Views
+Visualization Manager:
+  Class: ''
+  Enabled: true
+  Name: root
+  Global Options:
+    Fixed Frame: odom # 统一将显示数据变到此坐标系
+    Frame Rate: 20
+    Background Color: 35; 35; 35
+  Displays:
+  - Class: rviz_default_plugins/Grid
+    Name: Grid
+    Enabled: true
+    Cell Size: 1
+    Plane Cell Count: 30
+    Color: 90; 90; 90
+  - Class: rviz_default_plugins/TF
+    Name: TF
+    Enabled: true
+    Show Names: false
+    Show Axes: true
+    Show Arrows: false
+    Marker Scale: 0.25
+  - Class: rviz_default_plugins/Map
+    Name: Planning costmap
+    Enabled: true
+    Topic:
+      Value: /global_costmap/costmap # 此显示项订阅的数据话题
+      Depth: 5
+      History Policy: Keep Last
+      Reliability Policy: Reliable
+      Durability Policy: Transient Local
+    Color Scheme: costmap
+    Alpha: 0.8
+    Draw Behind: true
+  - Class: rviz_default_plugins/Path
+    Name: Planned path
+    Enabled: true
+    Topic:
+      Value: /plan # 此显示项订阅的数据话题
+      Depth: 5
+      History Policy: Keep Last
+      Reliability Policy: Reliable
+      Durability Policy: Volatile
+    Color: 80; 255; 80
+    Alpha: 1
+    Buffer Length: 1
+    Line Style: Lines
+    Line Width: 0.04
+    Pose Style: None
+  - Class: rviz_default_plugins/Path
+    Name: LIO travelled path
+    Enabled: true
+    Topic:
+      Value: /path # 此显示项订阅的数据话题
+      Depth: 5
+      History Policy: Keep Last
+      Reliability Policy: Reliable
+      Durability Policy: Volatile
+    Color: 80; 180; 255
+    Alpha: 1
+    Buffer Length: 1
+    Line Style: Lines
+    Line Width: 0.04
+    Pose Style: None
+  - Class: rviz_default_plugins/PointCloud2
+    Name: Observed obstacles
+    Enabled: true
+    Topic:
+      Value: /perception/obstacles # 此显示项订阅的数据话题
+      Depth: 5
+      History Policy: Keep Last
+      Reliability Policy: Best Effort
+      Durability Policy: Volatile
+    Alpha: 1
+    Color Transformer: FlatColor
+    Color: 255; 80; 60
+    Position Transformer: XYZ
+    Style: Flat Squares
+    Size (m): 0.06
+    Size (Pixels): 3
+    Decay Time: 0
+    Use Fixed Frame: true
+  - Class: rviz_default_plugins/Odometry
+    Name: Navigation pose
+    Enabled: true
+    Topic:
+      Value: /nav/odom # 此显示项订阅的数据话题
+      Depth: 5
+      History Policy: Keep Last
+      Reliability Policy: Reliable
+      Durability Policy: Volatile
+    Keep: 1
+    Position Tolerance: 0.05
+    Angle Tolerance: 0.05
+    Covariance:
+      Value: false
+    Shape:
+      Value: Arrow
+      Color: 255; 220; 60
+      Alpha: 1
+      Shaft Length: 0.5
+      Shaft Radius: 0.05
+      Head Length: 0.2
+      Head Radius: 0.1
+  Tools:
+  - Class: rviz_default_plugins/Interact
+  - Class: rviz_default_plugins/MoveCamera
+  - Class: rviz_default_plugins/Select
+  - Class: rviz_default_plugins/FocusCamera
+  - Class: rviz_default_plugins/Measure
+  Views:
+    Current:
+      Class: rviz_default_plugins/TopDownOrtho
+      Name: Current View
+      Target Frame: nav_base # 视角跟随的参考坐标系
+      Scale: 65
+      Angle: 0
+      X: 0
+      Y: 0
+Window Geometry:
+  Width: 1280
+  Height: 800
+  Hide Left Dock: false
