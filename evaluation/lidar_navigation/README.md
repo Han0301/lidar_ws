@@ -89,6 +89,28 @@ ROS_DOMAIN_ID=220 python3 evaluation/lidar_navigation/run_simulation.py
 - 录包局部地图通过 `bag_costmap.launch.py` 启动；其生命周期由 `activate_costmap.py` 在时钟和位姿可用后启用。该独立 costmap 无父服务器生命周期 bond，管理器关闭 bond 等待；规划服务器保留标准 bond。
 - `bag_planner.launch.py` 使用同一观测建立滚动规划地图，只规划已经观测的邻近空间，不输出速度。
 
+## 官方 IsPathValid 快照评估
+
+`test_official_ispathvalid.py` 读取同源对照保存的 `paired_planning.json` 和原始代价地图，调用安装版本的 `/official_snapshot/is_path_valid`。`ispathvalid_fixture` 继承官方 PlannerServer，只加载快照、设置该次起点的 TF 并暂停地图更新；没有重写 `isPathValid`。每张地图在调用前后通过官方 GetCostmap 逐格核对，同时检查原点和分辨率。
+
+该工具限定圆形轮廓配置（半径 0.25 m、padding 0.01 m），用保存的 XY 路径和单位姿态。插件更新已暂停，没有回放运动、重新规划或速度输出。空路径、地图外位置以及自由/内切膨胀/致命障碍/未知格采用独立单点请求作为对照；对被拒绝路径逐点调用官方服务定位，单点索引与完整路径响应的 `invalid_pose_indices` 分开记录。
+
+```bash
+cd ~/lidar_ws
+source scripts/setup_lidar_nav.sh
+cmake -S evaluation/lidar_navigation/ispathvalid_fixture \
+  -B evaluation/lidar_navigation/results/tools/ispathvalid_fixture \
+  -DCMAKE_BUILD_TYPE=Release
+cmake --build evaluation/lidar_navigation/results/tools/ispathvalid_fixture -j2
+REFERENCE_DIR="/absolute/path/to/saved/planning"
+ROS_DOMAIN_ID=230 python3 evaluation/lidar_navigation/test_official_ispathvalid.py \
+  --reference "$REFERENCE_DIR" \
+  --fixture evaluation/lidar_navigation/results/tools/ispathvalid_fixture/ispathvalid_fixture \
+  --output evaluation/lidar_navigation/results/official_ispathvalid
+```
+
+Nav2 不同版本的服务与判断条件可能不同，应保留本机接口、库版本和控制请求响应。`allow_unknown: false` 是 NavFn 参数；不要假定它改变 IsPathValid 服务的未知格策略。检查通过也不覆盖真实地形通行、路径点之间的连续扫掠或实际底盘碰撞。参考 [Nav2 1.3.13 PlannerServer 源码](https://github.com/ros-navigation/navigation2/blob/1.3.13/nav2_planner/src/planner_server.cpp)。
+
 ## 复用的开源方案
 
 - [PCL 聚类](https://pointclouds.org/documentation/tutorials/cluster_extraction.html)：体素、平面拟合与欧氏聚类。
