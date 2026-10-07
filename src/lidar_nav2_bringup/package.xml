@@ -1,0 +1,35 @@
+<?xml version='1.0' encoding='utf-8'?>
+<package format="3">
+  <name>lidar_nav2_bringup</name>
+  <version>0.1.0</version>
+  <description>Independent MID360 perception and navigation integration</description>
+  <maintainer email="230283695+Han0301@users.noreply.github.com">Han Zhang</maintainer>
+  <license>BSD-2-Clause</license>
+  <buildtool_depend>ament_cmake</buildtool_depend>
+  <depend>eigen</depend>
+  <depend>rclcpp</depend>
+  <depend>sensor_msgs</depend>
+  <depend>geometry_msgs</depend>
+  <depend>nav_msgs</depend>
+  <depend>diagnostic_msgs</depend>
+  <depend>tf2_ros</depend>
+  <exec_depend>launch_ros</exec_depend>
+  <exec_depend>nav2_costmap_2d</exec_depend>
+  <exec_depend>nav2_controller</exec_depend>
+  <exec_depend>nav2_planner</exec_depend>
+  <exec_depend>nav2_navfn_planner</exec_depend>
+  <exec_depend>nav2_dwb_controller</exec_depend>
+  <exec_depend>nav2_lifecycle_manager</exec_depend>
+  <exec_depend>nav2_bt_navigator</exec_depend>
+  <exec_depend>nav2_behaviors</exec_depend>
+  <exec_depend>nav2_map_server</exec_depend>
+  <exec_depend>nav2_loopback_sim</exec_depend>
+  <exec_depend>nav2_simple_commander</exec_depend>
+  <exec_depend>lidar_perception</exec_depend>
+  <exec_depend>ament_index_python</exec_depend>
+  <exec_depend>nav2_msgs</exec_depend>
+  <test_depend>ament_cmake_gtest</test_depend>
+  <export>
+    <build_type>ament_cmake</build_type>
+  </export>
+</package>

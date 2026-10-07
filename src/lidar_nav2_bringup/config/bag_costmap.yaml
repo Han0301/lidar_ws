@@ -1,0 +1,67 @@
+# Clear along measured rays from the sensor origin; never invent endpoints.
+local_costmap:
+  local_costmap:
+    ros__parameters:
+      use_sim_time: true
+      update_frequency: 5.0
+      publish_frequency: 2.0
+      global_frame: odom
+      robot_base_frame: nav_base
+      rolling_window: true
+      width: 12
+      height: 12
+      resolution: 0.1
+      robot_radius: 0.25
+      transform_tolerance: 0.3
+      initial_transform_timeout: 30.0
+      track_unknown_space: true
+      always_send_full_costmap: true
+      plugins:
+      - voxel_layer
+      - inflation_layer
+      voxel_layer:
+        plugin: nav2_costmap_2d::VoxelLayer
+        enabled: true
+        publish_voxel_map: true
+        origin_z: -2.0
+        z_resolution: 0.35
+        z_voxels: 16
+        max_obstacle_height: 3.5
+        mark_threshold: 0
+        unknown_threshold: 15
+        observation_sources: mark clear
+        mark:
+          data_type: PointCloud2
+          sensor_frame: nav_sensor
+          observation_persistence: 0.0
+          expected_update_rate: 0.5
+          max_obstacle_height: 3.5
+          min_obstacle_height: -2.0
+          obstacle_min_range: 0.45
+          obstacle_max_range: 12.0
+          raytrace_min_range: 0.0
+          raytrace_max_range: 15.0
+          topic: /perception/obstacles
+          marking: true
+          clearing: false
+        clear:
+          data_type: PointCloud2
+          sensor_frame: nav_sensor
+          observation_persistence: 0.0
+          expected_update_rate: 0.5
+          max_obstacle_height: 3.5
+          min_obstacle_height: -2.0
+          obstacle_min_range: 0.45
+          obstacle_max_range: 12.0
+          raytrace_min_range: 0.0
+          raytrace_max_range: 15.0
+          topic: /perception/clearing
+          marking: false
+          clearing: true
+      inflation_layer:
+        plugin: nav2_costmap_2d::InflationLayer
+        inflation_radius: 0.55
+        cost_scaling_factor: 3.0
+      static_layer:
+        plugin: nav2_costmap_2d::StaticLayer
+        map_subscribe_transient_local: true

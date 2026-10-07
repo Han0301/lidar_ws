@@ -1,11 +1,14 @@
 # lidar_ws：Livox MID-360 与 FAST-LIO2（ROS 2 Jazzy）
 
-这个仓库保存本工作空间的自写 `mid360_monitor` 包，以及对 FAST_LIO 和 Livox ROS 驱动的本地适配补丁。上游项目按指定提交检出；bag、地图、构建产物和编辑器缓存不入库。
+这个仓库保存本工作空间的自写 `mid360_monitor`、`lidar_perception`、`lidar_nav2_bringup` 包，以及对 FAST_LIO 和 Livox ROS 驱动的本地适配补丁。上游项目按指定提交检出；bag、地图、构建产物和编辑器缓存不入库。
 
 ## 目录
 
 ```text
 lidar_ws/
+├── src/lidar_perception/           # 地面、障碍、聚类与可选区域过滤
+├── src/lidar_nav2_bringup/          # 重力参考与 Nav2 接入
+├── evaluation/lidar_navigation/    # 户外录包与理想闭环评估
 ├── src/mid360_monitor/              # 点云与 IMU 的频率、时间戳监测
 ├── patches/fast_lio.patch           # FAST_LIO 的 Jazzy/依赖/地图路径适配
 ├── patches/livox_ros_driver2.patch  # 本机与 MID-360 的网络地址
@@ -190,3 +193,7 @@ bash evaluation/run_all.sh
 ```
 
 脚本会检查原始输入时间戳与 IMU 覆盖，再按原速回放并统计 FAST-LIO2 里程计。逐组命令、输出说明和已有结果见 [evaluation/README.md](evaluation/README.md) 与 [测试报告](evaluation/RESULTS_2026-10-06.md)。结果写入已忽略的 `evaluation/results/`，原始 bag 不会上传到仓库。
+
+## 雷达感知与 Nav2 接入
+
+新增独立感知支路，包含重力对齐、可选操作者区域过滤、地面分割和几何聚类，并接入 Nav2 体素代价地图。户外手持录包用于地图与路径规划检查；控制闭环在 Nav2 官方理想仿真中验证。构建、快速启动、代码调用链和验证边界见 [感知与导航说明](evaluation/lidar_navigation/README.md)。实测报告与场地数据默认保存在本机，上传需要单独授权。

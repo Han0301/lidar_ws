@@ -1,0 +1,5 @@
+# Experimental holder-region candidate derived from outdoor scans.
+# This is a spatial mask, not confirmed human identity; do not deploy unreviewed.
+lidar_perception:
+  ros__parameters:
+    self_box_body: [-0.90, -0.35, -0.25, 0.80, -0.10, 0.75]

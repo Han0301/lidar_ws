@@ -1,0 +1,234 @@
+[
+  {
+    "name": "ros-jazzy-behaviortree-cpp",
+    "version": "4.10.0-1noble.20260911.134208",
+    "url": "http://packages.ros.org/ros2/ubuntu/pool/main/r/ros-jazzy-behaviortree-cpp/ros-jazzy-behaviortree-cpp_4.10.0-1noble.20260911.134208_amd64.deb",
+    "sha256": "d22ca1972545808d522c381a639b07c9233fe812d9d632e11018ae605c661c63",
+    "size": 639904,
+    "depends": "libc6 (>= 2.38), libgcc-s1 (>= 3.3.1), libsqlite3-0 (>= 3.10.0), libstdc++6 (>= 13.1), libtinyxml2-10 (>= 10.0.0), libzmq5 (>= 4.0.1+dfsg), cppzmq-dev, libsqlite3-dev, libtinyxml2-dev, libzmq3-dev, ros-jazzy-ament-index-cpp, ros-jazzy-rclcpp, ros-jazzy-tinyxml2-vendor, ros-jazzy-ros-workspace"
+  },
+  {
+    "name": "ros-jazzy-geographic-msgs",
+    "version": "1.0.6-2noble.20260911.110242",
+    "url": "http://packages.ros.org/ros2/ubuntu/pool/main/r/ros-jazzy-geographic-msgs/ros-jazzy-geographic-msgs_1.0.6-2noble.20260911.110242_amd64.deb",
+    "sha256": "cf689ee19d42f998ef6fee57d8d4fd3689ccbc4939c72c61c3cccdb6c51059a8",
+    "size": 320508,
+    "depends": "libc6 (>= 2.14), libgcc-s1 (>= 3.3.1), libpython3.12t64 (>= 3.12.1), libstdc++6 (>= 11), ros-jazzy-fastcdr, ros-jazzy-geometry-msgs, ros-jazzy-rosidl-default-runtime, ros-jazzy-std-msgs, ros-jazzy-unique-identifier-msgs, ros-jazzy-ros-workspace"
+  },
+  {
+    "name": "ros-jazzy-nav2-msgs",
+    "version": "1.3.13-1noble.20260921.023049",
+    "url": "http://packages.ros.org/ros2/ubuntu/pool/main/r/ros-jazzy-nav2-msgs/ros-jazzy-nav2-msgs_1.3.13-1noble.20260921.023049_amd64.deb",
+    "sha256": "2a9605718f6d95997b0b8282dbdf5a96cb4245b429e5eb12d0a0d4ab6cb500d8",
+    "size": 1826476,
+    "depends": "libc6 (>= 2.14), libgcc-s1 (>= 3.3.1), libpython3.12t64 (>= 3.12.1), libstdc++6 (>= 11), ros-jazzy-fastcdr, ros-jazzy-action-msgs, ros-jazzy-builtin-interfaces, ros-jazzy-geographic-msgs, ros-jazzy-geometry-msgs, ros-jazzy-nav-msgs, ros-jazzy-rclcpp, ros-jazzy-rosidl-default-generators, ros-jazzy-std-msgs, ros-jazzy-ros-workspace"
+  },
+  {
+    "name": "ros-jazzy-nav2-common",
+    "version": "1.3.13-1noble.20260920.234759",
+    "url": "http://packages.ros.org/ros2/ubuntu/pool/main/r/ros-jazzy-nav2-common/ros-jazzy-nav2-common_1.3.13-1noble.20260920.234759_amd64.deb",
+    "sha256": "8f283bf34846af466ae8cb1b41bb6092fbc6e598534fcd371975e07387f01301",
+    "size": 10300,
+    "depends": "python3-yaml, ros-jazzy-ament-cmake-core, ros-jazzy-launch, ros-jazzy-launch-ros, ros-jazzy-osrf-pycommon, ros-jazzy-rclpy, ros-jazzy-ros-workspace"
+  },
+  {
+    "name": "ros-jazzy-nav2-util",
+    "version": "1.3.13-1noble.20260921.024419",
+    "url": "http://packages.ros.org/ros2/ubuntu/pool/main/r/ros-jazzy-nav2-util/ros-jazzy-nav2-util_1.3.13-1noble.20260921.024419_amd64.deb",
+    "sha256": "4217d798a5fddf24faa3108110d4e0be503b610b5fbc7278f9e3c7de6712b0dc",
+    "size": 170594,
+    "depends": "libc6 (>= 2.34), libgcc-s1 (>= 3.3.1), liborocos-kdl1.5 (>= 1.5.1), libstdc++6 (>= 13.1), ros-jazzy-bond, ros-jazzy-bondcpp, ros-jazzy-builtin-interfaces, ros-jazzy-geometry-msgs, ros-jazzy-lifecycle-msgs, ros-jazzy-nav-msgs, ros-jazzy-nav2-common, ros-jazzy-nav2-msgs, ros-jazzy-rcl-interfaces, ros-jazzy-rclcpp, ros-jazzy-rclcpp-action, ros-jazzy-rclcpp-lifecycle, ros-jazzy-std-msgs, ros-jazzy-tf2, ros-jazzy-tf2-geometry-msgs, ros-jazzy-tf2-msgs, ros-jazzy-tf2-ros, ros-jazzy-ros-workspace"
+  },
+  {
+    "name": "ros-jazzy-nav2-voxel-grid",
+    "version": "1.3.13-1noble.20260921.023047",
+    "url": "http://packages.ros.org/ros2/ubuntu/pool/main/r/ros-jazzy-nav2-voxel-grid/ros-jazzy-nav2-voxel-grid_1.3.13-1noble.20260921.023047_amd64.deb",
+    "sha256": "3f556aec724a01e869fd9ffdb483c98a57b54929db6994a73460faebcbe869ed",
+    "size": 19770,
+    "depends": "libc6 (>= 2.32), libgcc-s1 (>= 3.3.1), libstdc++6 (>= 13.1), ros-jazzy-rclcpp, ros-jazzy-ros-workspace"
+  },
+  {
+    "name": "ros-jazzy-nav2-costmap-2d",
+    "version": "1.3.13-1noble.20260921.024946",
+    "url": "http://packages.ros.org/ros2/ubuntu/pool/main/r/ros-jazzy-nav2-costmap-2d/ros-jazzy-nav2-costmap-2d_1.3.13-1noble.20260921.024946_amd64.deb",
+    "sha256": "e5dd68805a8291db972f321ce11e2686bf8d84cf3ddb212f7a8935f13f626b06",
+    "size": 1073034,
+    "depends": "libc6 (>= 2.38), libconsole-bridge1.0 (>= 1.0.1+dfsg2), libgcc-s1 (>= 3.3.1), liborocos-kdl1.5 (>= 1.5.1), libstdc++6 (>= 13.1), libtinyxml2-10 (>= 10.0.0), ros-jazzy-angles, ros-jazzy-geometry-msgs, ros-jazzy-laser-geometry, ros-jazzy-map-msgs, ros-jazzy-message-filters, ros-jazzy-nav-msgs, ros-jazzy-nav2-msgs, ros-jazzy-nav2-util, ros-jazzy-nav2-voxel-grid, ros-jazzy-pluginlib, ros-jazzy-rclcpp, ros-jazzy-rclcpp-lifecycle, ros-jazzy-sensor-msgs, ros-jazzy-std-msgs, ros-jazzy-std-srvs, ros-jazzy-tf2, ros-jazzy-tf2-geometry-msgs, ros-jazzy-tf2-ros, ros-jazzy-tf2-sensor-msgs, ros-jazzy-visualization-msgs, ros-jazzy-ros-workspace"
+  },
+  {
+    "name": "ros-jazzy-costmap-queue",
+    "version": "1.3.13-1noble.20260921.030325",
+    "url": "http://packages.ros.org/ros2/ubuntu/pool/main/r/ros-jazzy-costmap-queue/ros-jazzy-costmap-queue_1.3.13-1noble.20260921.030325_amd64.deb",
+    "sha256": "f787f85c55059ad254d43423b7e8ebcf770273ea79f20dfed71b6303977244fc",
+    "size": 18410,
+    "depends": "libc6 (>= 2.35), libgcc-s1 (>= 3.3.1), libstdc++6 (>= 5.2), ros-jazzy-nav2-costmap-2d, ros-jazzy-rclcpp, ros-jazzy-ros-workspace"
+  },
+  {
+    "name": "ros-jazzy-nav-2d-msgs",
+    "version": "1.3.13-1noble.20260911.135428",
+    "url": "http://packages.ros.org/ros2/ubuntu/pool/main/r/ros-jazzy-nav-2d-msgs/ros-jazzy-nav-2d-msgs_1.3.13-1noble.20260911.135428_amd64.deb",
+    "sha256": "90f372b7c0a99a2d8987a789a3613e28fbfb3454e7fe44834973766a90cbdc7a",
+    "size": 81856,
+    "depends": "libc6 (>= 2.4), libgcc-s1 (>= 3.3.1), libpython3.12t64 (>= 3.12.1), libstdc++6 (>= 5.2), ros-jazzy-fastcdr, ros-jazzy-geometry-msgs, ros-jazzy-rosidl-default-generators, ros-jazzy-rosidl-default-runtime, ros-jazzy-std-msgs, ros-jazzy-ros-workspace"
+  },
+  {
+    "name": "ros-jazzy-dwb-msgs",
+    "version": "1.3.13-1noble.20260911.135925",
+    "url": "http://packages.ros.org/ros2/ubuntu/pool/main/r/ros-jazzy-dwb-msgs/ros-jazzy-dwb-msgs_1.3.13-1noble.20260911.135925_amd64.deb",
+    "sha256": "8c2c5b4fbbaa8e3b529b123d2bd13438299dc8f4121a7c1f07d8aaac261237ed",
+    "size": 233882,
+    "depends": "libc6 (>= 2.14), libgcc-s1 (>= 3.3.1), libpython3.12t64 (>= 3.12.1), libstdc++6 (>= 11), ros-jazzy-fastcdr, ros-jazzy-builtin-interfaces, ros-jazzy-geometry-msgs, ros-jazzy-nav-2d-msgs, ros-jazzy-nav-msgs, ros-jazzy-rosidl-default-runtime, ros-jazzy-std-msgs, ros-jazzy-ros-workspace"
+  },
+  {
+    "name": "ros-jazzy-nav-2d-utils",
+    "version": "1.3.13-1noble.20260921.025012",
+    "url": "http://packages.ros.org/ros2/ubuntu/pool/main/r/ros-jazzy-nav-2d-utils/ros-jazzy-nav-2d-utils_1.3.13-1noble.20260921.025012_amd64.deb",
+    "sha256": "f3f7f19af9bb64ded91bd25fe32c58d5bdb7baebe12255f8731166d20d1037cf",
+    "size": 23992,
+    "depends": "libc6 (>= 2.32), libgcc-s1 (>= 3.3.1), liborocos-kdl1.5 (>= 1.5.1), libstdc++6 (>= 13.1), ros-jazzy-geometry-msgs, ros-jazzy-nav-2d-msgs, ros-jazzy-nav-msgs, ros-jazzy-nav2-msgs, ros-jazzy-nav2-util, ros-jazzy-std-msgs, ros-jazzy-tf2, ros-jazzy-tf2-geometry-msgs, ros-jazzy-ros-workspace"
+  },
+  {
+    "name": "ros-jazzy-nav2-behavior-tree",
+    "version": "1.3.13-1noble.20260921.024958",
+    "url": "http://packages.ros.org/ros2/ubuntu/pool/main/r/ros-jazzy-nav2-behavior-tree/ros-jazzy-nav2-behavior-tree_1.3.13-1noble.20260921.024958_amd64.deb",
+    "sha256": "b5a2b1751aaedc2fa8c3fa0da83db3f2d380eb9e77ea31dcc61c82c1c3ed85b7",
+    "size": 1957984,
+    "depends": "libc6 (>= 2.38), libgcc-s1 (>= 3.3.1), libstdc++6 (>= 13.1), ros-jazzy-behaviortree-cpp, ros-jazzy-builtin-interfaces, ros-jazzy-geometry-msgs, ros-jazzy-lifecycle-msgs, ros-jazzy-nav-msgs, ros-jazzy-nav2-msgs, ros-jazzy-nav2-util, ros-jazzy-rclcpp, ros-jazzy-rclcpp-action, ros-jazzy-rclcpp-lifecycle, ros-jazzy-sensor-msgs, ros-jazzy-std-msgs, ros-jazzy-std-srvs, ros-jazzy-tf2, ros-jazzy-tf2-geometry-msgs, ros-jazzy-tf2-ros, ros-jazzy-ros-workspace"
+  },
+  {
+    "name": "ros-jazzy-nav2-core",
+    "version": "1.3.13-1noble.20260921.031435",
+    "url": "http://packages.ros.org/ros2/ubuntu/pool/main/r/ros-jazzy-nav2-core/ros-jazzy-nav2-core_1.3.13-1noble.20260921.031435_amd64.deb",
+    "sha256": "bf37d3f115b566f2b3a77636747ea9063aa747f490f0f183971395837c120d28",
+    "size": 14268,
+    "depends": "ros-jazzy-geometry-msgs, ros-jazzy-nav-msgs, ros-jazzy-nav2-behavior-tree, ros-jazzy-nav2-costmap-2d, ros-jazzy-nav2-util, ros-jazzy-pluginlib, ros-jazzy-rclcpp, ros-jazzy-rclcpp-lifecycle, ros-jazzy-std-msgs, ros-jazzy-tf2-ros, ros-jazzy-ros-workspace"
+  },
+  {
+    "name": "ros-jazzy-dwb-core",
+    "version": "1.3.13-1noble.20260921.031756",
+    "url": "http://packages.ros.org/ros2/ubuntu/pool/main/r/ros-jazzy-dwb-core/ros-jazzy-dwb-core_1.3.13-1noble.20260921.031756_amd64.deb",
+    "sha256": "eac6ee927bd29d9fa008bcdb6cf219ac6334b235965b3f2c6af6248c391d93eb",
+    "size": 206708,
+    "depends": "libc6 (>= 2.35), libconsole-bridge1.0 (>= 1.0.1+dfsg2), libgcc-s1 (>= 3.3.1), libstdc++6 (>= 13.1), libtinyxml2-10 (>= 10.0.0), ros-jazzy-dwb-msgs, ros-jazzy-geometry-msgs, ros-jazzy-nav-2d-utils, ros-jazzy-nav-msgs, ros-jazzy-nav2-core, ros-jazzy-nav2-costmap-2d, ros-jazzy-nav2-util, ros-jazzy-pluginlib, ros-jazzy-rclcpp, ros-jazzy-std-msgs, ros-jazzy-tf2-ros, ros-jazzy-ros-workspace"
+  },
+  {
+    "name": "ros-jazzy-dwb-critics",
+    "version": "1.3.13-1noble.20260921.032401",
+    "url": "http://packages.ros.org/ros2/ubuntu/pool/main/r/ros-jazzy-dwb-critics/ros-jazzy-dwb-critics_1.3.13-1noble.20260921.032401_amd64.deb",
+    "sha256": "f7c4970a215c27427e6044f6687348a6912c4f6c5a362a87e8eb746f91f35942",
+    "size": 58838,
+    "depends": "libc6 (>= 2.38), libconsole-bridge1.0 (>= 1.0.1+dfsg2), libgcc-s1 (>= 3.3.1), libstdc++6 (>= 13.1), ros-jazzy-angles, ros-jazzy-costmap-queue, ros-jazzy-dwb-core, ros-jazzy-geometry-msgs, ros-jazzy-nav-2d-msgs, ros-jazzy-nav-2d-utils, ros-jazzy-nav2-costmap-2d, ros-jazzy-nav2-util, ros-jazzy-pluginlib, ros-jazzy-rclcpp, ros-jazzy-sensor-msgs, ros-jazzy-ros-workspace"
+  },
+  {
+    "name": "ros-jazzy-dwb-plugins",
+    "version": "1.3.13-1noble.20260921.032359",
+    "url": "http://packages.ros.org/ros2/ubuntu/pool/main/r/ros-jazzy-dwb-plugins/ros-jazzy-dwb-plugins_1.3.13-1noble.20260921.032359_amd64.deb",
+    "sha256": "967e24e0729bab0bb8dc23518913b4d8abdc2cc0084122a496d74a7e8014ff3b",
+    "size": 47898,
+    "depends": "libc6 (>= 2.35), libconsole-bridge1.0 (>= 1.0.1+dfsg2), libgcc-s1 (>= 3.3.1), libstdc++6 (>= 13.1), ros-jazzy-angles, ros-jazzy-dwb-core, ros-jazzy-nav-2d-msgs, ros-jazzy-nav-2d-utils, ros-jazzy-nav2-util, ros-jazzy-pluginlib, ros-jazzy-rclcpp, ros-jazzy-ros-workspace"
+  },
+  {
+    "name": "ros-jazzy-nav2-behaviors",
+    "version": "1.3.13-1noble.20260921.031747",
+    "url": "http://packages.ros.org/ros2/ubuntu/pool/main/r/ros-jazzy-nav2-behaviors/ros-jazzy-nav2-behaviors_1.3.13-1noble.20260921.031747_amd64.deb",
+    "sha256": "2ed8ca2dea35e3ee0ef932250e1d827b1bb8c72a14c7c54b3338bfbc135f4c75",
+    "size": 533060,
+    "depends": "libc6 (>= 2.35), libconsole-bridge1.0 (>= 1.0.1+dfsg2), libgcc-s1 (>= 3.3.1), libstdc++6 (>= 13.1), libtinyxml2-10 (>= 10.0.0), ros-jazzy-geometry-msgs, ros-jazzy-nav-msgs, ros-jazzy-nav2-behavior-tree, ros-jazzy-nav2-core, ros-jazzy-nav2-costmap-2d, ros-jazzy-nav2-msgs, ros-jazzy-nav2-util, ros-jazzy-pluginlib, ros-jazzy-rclcpp, ros-jazzy-rclcpp-action, ros-jazzy-rclcpp-lifecycle, ros-jazzy-ros-workspace"
+  },
+  {
+    "name": "ros-jazzy-nav2-bt-navigator",
+    "version": "1.3.13-1noble.20260921.031756",
+    "url": "http://packages.ros.org/ros2/ubuntu/pool/main/r/ros-jazzy-nav2-bt-navigator/ros-jazzy-nav2-bt-navigator_1.3.13-1noble.20260921.031756_amd64.deb",
+    "sha256": "eb624c2b29d42a5ff2cf66b89b50f922d6d7f9e414a57e4a59732a3ed3a02f95",
+    "size": 473926,
+    "depends": "libc6 (>= 2.35), libconsole-bridge1.0 (>= 1.0.1+dfsg2), libgcc-s1 (>= 3.3.1), libstdc++6 (>= 13.1), libtinyxml2-10 (>= 10.0.0), ros-jazzy-behaviortree-cpp, ros-jazzy-geometry-msgs, ros-jazzy-nav-msgs, ros-jazzy-nav2-behavior-tree, ros-jazzy-nav2-core, ros-jazzy-nav2-msgs, ros-jazzy-nav2-util, ros-jazzy-pluginlib, ros-jazzy-rclcpp, ros-jazzy-rclcpp-action, ros-jazzy-rclcpp-lifecycle, ros-jazzy-std-msgs, ros-jazzy-tf2-ros, ros-jazzy-ros-workspace"
+  },
+  {
+    "name": "ros-jazzy-nav2-controller",
+    "version": "1.3.13-1noble.20260921.031754",
+    "url": "http://packages.ros.org/ros2/ubuntu/pool/main/r/ros-jazzy-nav2-controller/ros-jazzy-nav2-controller_1.3.13-1noble.20260921.031754_amd64.deb",
+    "sha256": "50f5f73c58b1918b1b379a47d0f760da43e6b094d46a533257b6bf7b7e36973c",
+    "size": 347558,
+    "depends": "libc6 (>= 2.38), libconsole-bridge1.0 (>= 1.0.1+dfsg2), libgcc-s1 (>= 3.3.1), libstdc++6 (>= 13.1), libtinyxml2-10 (>= 10.0.0), ros-jazzy-angles, ros-jazzy-nav-2d-msgs, ros-jazzy-nav-2d-utils, ros-jazzy-nav2-core, ros-jazzy-nav2-costmap-2d, ros-jazzy-nav2-msgs, ros-jazzy-nav2-util, ros-jazzy-pluginlib, ros-jazzy-rclcpp, ros-jazzy-rclcpp-action, ros-jazzy-std-msgs, ros-jazzy-ros-workspace"
+  },
+  {
+    "name": "ros-jazzy-nav2-dwb-controller",
+    "version": "1.3.13-1noble.20260921.033150",
+    "url": "http://packages.ros.org/ros2/ubuntu/pool/main/r/ros-jazzy-nav2-dwb-controller/ros-jazzy-nav2-dwb-controller_1.3.13-1noble.20260921.033150_amd64.deb",
+    "sha256": "5d028419a4b6d0e653d99dee98c4301d47aa4338db6691dbc4dd506e49f277ff",
+    "size": 5178,
+    "depends": "ros-jazzy-costmap-queue, ros-jazzy-dwb-core, ros-jazzy-dwb-critics, ros-jazzy-dwb-msgs, ros-jazzy-dwb-plugins, ros-jazzy-nav-2d-msgs, ros-jazzy-nav-2d-utils, ros-jazzy-ros-workspace"
+  },
+  {
+    "name": "ros-jazzy-nav2-lifecycle-manager",
+    "version": "1.3.13-1noble.20260921.025008",
+    "url": "http://packages.ros.org/ros2/ubuntu/pool/main/r/ros-jazzy-nav2-lifecycle-manager/ros-jazzy-nav2-lifecycle-manager_1.3.13-1noble.20260921.025008_amd64.deb",
+    "sha256": "48ab4bf7c92647d2fdff231fc300d25583b2c4550316cbd6357697482d4d6e7f",
+    "size": 91196,
+    "depends": "libc6 (>= 2.34), libconsole-bridge1.0 (>= 1.0.1+dfsg2), libgcc-s1 (>= 3.3.1), libstdc++6 (>= 13.1), ros-jazzy-bondcpp, ros-jazzy-diagnostic-updater, ros-jazzy-geometry-msgs, ros-jazzy-lifecycle-msgs, ros-jazzy-nav2-msgs, ros-jazzy-nav2-util, ros-jazzy-rclcpp-action, ros-jazzy-rclcpp-lifecycle, ros-jazzy-std-msgs, ros-jazzy-std-srvs, ros-jazzy-tf2-geometry-msgs, ros-jazzy-ros-workspace"
+  },
+  {
+    "name": "ros-jazzy-nav2-simple-commander",
+    "version": "1.3.13-1noble.20260921.030016",
+    "url": "http://packages.ros.org/ros2/ubuntu/pool/main/r/ros-jazzy-nav2-simple-commander/ros-jazzy-nav2-simple-commander_1.3.13-1noble.20260921.030016_amd64.deb",
+    "sha256": "1e1bac80c37a72143b27e8f0f6aa1ad63a1948a510e7101123e9ef8e44d02747",
+    "size": 42486,
+    "depends": "ros-jazzy-action-msgs, ros-jazzy-geometry-msgs, ros-jazzy-lifecycle-msgs, ros-jazzy-nav2-msgs, ros-jazzy-rclpy, ros-jazzy-ros-workspace"
+  },
+  {
+    "name": "ros-jazzy-tf-transformations",
+    "version": "1.1.1-1noble.20260225.142630",
+    "url": "http://packages.ros.org/ros2/ubuntu/pool/main/r/ros-jazzy-tf-transformations/ros-jazzy-tf-transformations_1.1.1-1noble.20260225.142630_amd64.deb",
+    "sha256": "512cf4bb588fef1679160f3d1227556e581a9742319b6586e9db5546cbe77d08",
+    "size": 23880,
+    "depends": "python3-numpy, python3-transforms3d, ros-jazzy-ros-workspace"
+  },
+  {
+    "name": "ros-jazzy-nav2-loopback-sim",
+    "version": "1.3.13-1noble.20260921.030448",
+    "url": "http://packages.ros.org/ros2/ubuntu/pool/main/r/ros-jazzy-nav2-loopback-sim/ros-jazzy-nav2-loopback-sim_1.3.13-1noble.20260921.030448_amd64.deb",
+    "sha256": "ffb03e83b334920282dbab30e82dec943daf16f66ee8e1d19b2cc0e26eeae68a",
+    "size": 17238,
+    "depends": "python3-transforms3d, ros-jazzy-geometry-msgs, ros-jazzy-nav-msgs, ros-jazzy-nav2-simple-commander, ros-jazzy-rclpy, ros-jazzy-tf-transformations, ros-jazzy-tf2-ros, ros-jazzy-ros-workspace"
+  },
+  {
+    "name": "ros-jazzy-nav2-map-server",
+    "version": "1.3.13-1noble.20260921.024942",
+    "url": "http://packages.ros.org/ros2/ubuntu/pool/main/r/ros-jazzy-nav2-map-server/ros-jazzy-nav2-map-server_1.3.13-1noble.20260921.024942_amd64.deb",
+    "sha256": "11b3c38c69ada7c4ded3454ba354fd4d3026405857c9a1fc0ee08204807d4b59",
+    "size": 224418,
+    "depends": "libc6 (>= 2.34), libconsole-bridge1.0 (>= 1.0.1+dfsg2), libgcc-s1 (>= 3.3.1), libgraphicsmagick++-q16-12t64 (>= 1.3.26-5~), libstdc++6 (>= 13.1), libyaml-cpp0.8 (>= 0.7.0), graphicsmagick-libmagick-dev-compat, libgraphicsmagick++1-dev, ros-jazzy-launch-ros, ros-jazzy-launch-testing, ros-jazzy-nav-msgs, ros-jazzy-nav2-msgs, ros-jazzy-nav2-util, ros-jazzy-rclcpp, ros-jazzy-rclcpp-lifecycle, ros-jazzy-std-msgs, ros-jazzy-tf2, ros-jazzy-yaml-cpp-vendor, ros-jazzy-ros-workspace"
+  },
+  {
+    "name": "ros-jazzy-nav2-navfn-planner",
+    "version": "1.3.13-1noble.20260921.031752",
+    "url": "http://packages.ros.org/ros2/ubuntu/pool/main/r/ros-jazzy-nav2-navfn-planner/ros-jazzy-nav2-navfn-planner_1.3.13-1noble.20260921.031752_amd64.deb",
+    "sha256": "b85f172cabb724f43f7121cea12121c94aa75f898ecd6b72c6ceb2db0d5d4548",
+    "size": 51554,
+    "depends": "libc6 (>= 2.35), libconsole-bridge1.0 (>= 1.0.1+dfsg2), libgcc-s1 (>= 3.3.1), libstdc++6 (>= 13.1), ros-jazzy-builtin-interfaces, ros-jazzy-geometry-msgs, ros-jazzy-nav-msgs, ros-jazzy-nav2-common, ros-jazzy-nav2-core, ros-jazzy-nav2-costmap-2d, ros-jazzy-nav2-msgs, ros-jazzy-nav2-util, ros-jazzy-pluginlib, ros-jazzy-rclcpp, ros-jazzy-rclcpp-action, ros-jazzy-rclcpp-lifecycle, ros-jazzy-tf2-ros, ros-jazzy-visualization-msgs, ros-jazzy-ros-workspace"
+  },
+  {
+    "name": "ros-jazzy-nav2-planner",
+    "version": "1.3.13-1noble.20260921.031801",
+    "url": "http://packages.ros.org/ros2/ubuntu/pool/main/r/ros-jazzy-nav2-planner/ros-jazzy-nav2-planner_1.3.13-1noble.20260921.031801_amd64.deb",
+    "sha256": "82275521c98816a41f5704c7a2e6ea895c24b10d8a18cb522393b7e4a99a8170",
+    "size": 208572,
+    "depends": "libc6 (>= 2.35), libconsole-bridge1.0 (>= 1.0.1+dfsg2), libgcc-s1 (>= 3.3.1), libstdc++6 (>= 13.1), libtinyxml2-10 (>= 10.0.0), ros-jazzy-builtin-interfaces, ros-jazzy-geometry-msgs, ros-jazzy-nav-msgs, ros-jazzy-nav2-common, ros-jazzy-nav2-core, ros-jazzy-nav2-costmap-2d, ros-jazzy-nav2-msgs, ros-jazzy-nav2-util, ros-jazzy-pluginlib, ros-jazzy-rclcpp, ros-jazzy-rclcpp-action, ros-jazzy-rclcpp-lifecycle, ros-jazzy-tf2-ros, ros-jazzy-visualization-msgs, ros-jazzy-ros-workspace"
+  },
+  {
+    "name": "ros-jazzy-nav2-route",
+    "version": "1.3.13-1noble.20260921.031810",
+    "url": "http://packages.ros.org/ros2/ubuntu/pool/main/r/ros-jazzy-nav2-route/ros-jazzy-nav2-route_1.3.13-1noble.20260921.031810_amd64.deb",
+    "sha256": "d5fb4c00761442dbb485cb5bba114b8e3f2cc8c78da866329b1ff1ca0e5ea0af",
+    "size": 582934,
+    "depends": "libc6 (>= 2.38), libconsole-bridge1.0 (>= 1.0.1+dfsg2), libgcc-s1 (>= 3.3.1), libstdc++6 (>= 13.1), libtinyxml2-10 (>= 10.0.0), libnanoflann-dev, nlohmann-json3-dev, ros-jazzy-angles, ros-jazzy-backward-ros, ros-jazzy-geometry-msgs, ros-jazzy-nav-msgs, ros-jazzy-nav2-core, ros-jazzy-nav2-costmap-2d, ros-jazzy-nav2-msgs, ros-jazzy-nav2-util, ros-jazzy-pluginlib, ros-jazzy-rclcpp, ros-jazzy-rclcpp-lifecycle, ros-jazzy-std-msgs, ros-jazzy-tf2, ros-jazzy-tf2-ros, ros-jazzy-visualization-msgs, ros-jazzy-ros-workspace"
+  },
+  {
+    "name": "ros-jazzy-nav2-rviz-plugins",
+    "version": "1.3.13-1noble.20260921.032725",
+    "url": "http://packages.ros.org/ros2/ubuntu/pool/main/r/ros-jazzy-nav2-rviz-plugins/ros-jazzy-nav2-rviz-plugins_1.3.13-1noble.20260921.032725_amd64.deb",
+    "sha256": "4f19f0da443880250aebc23a9fc3236c39715f0b3e72332df49fb06cbd54ac56",
+    "size": 575090,
+    "depends": "libc6 (>= 2.38), libconsole-bridge1.0 (>= 1.0.1+dfsg2), libgcc-s1 (>= 3.3.1), libqt5core5t64 (>= 5.15.1), libqt5gui5t64 (>= 5.0.2) | libqt5gui5-gles (>= 5.0.2), libqt5widgets5t64 (>= 5.0.2), libstdc++6 (>= 13.1), libtinyxml2-10 (>= 10.0.0), libyaml-cpp0.8 (>= 0.7.0), ros-jazzy-rviz-ogre-vendor, libqt5gui5t64, libqt5opengl5t64, ros-jazzy-geometry-msgs, ros-jazzy-nav-msgs, ros-jazzy-nav2-lifecycle-manager, ros-jazzy-nav2-msgs, ros-jazzy-nav2-route, ros-jazzy-nav2-util, ros-jazzy-pluginlib, ros-jazzy-rclcpp, ros-jazzy-rclcpp-lifecycle, ros-jazzy-resource-retriever, ros-jazzy-rviz-common, ros-jazzy-rviz-default-plugins, ros-jazzy-rviz-rendering, ros-jazzy-std-msgs, ros-jazzy-tf2-geometry-msgs, ros-jazzy-urdf, ros-jazzy-visualization-msgs, ros-jazzy-yaml-cpp-vendor, ros-jazzy-ros-workspace"
+  }
+]

@@ -1,0 +1,7 @@
+lio_nav_bridge:
+  ros__parameters:
+    use_sim_time: true
+    gravity_samples: 100
+    input_timeout_s: 0.6
+    max_ground_innovation_m: 0.5
+    lidar_translation_in_body: [-0.011, -0.02329, 0.04412]
