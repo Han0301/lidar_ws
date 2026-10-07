@@ -12,8 +12,8 @@ from launch_ros.actions import Node
 
 # 组装 LIO 坐标桥接、规划地图、启动门控及可选导航视图
 def generate_launch_description():
-    share = Path(get_package_share_directory('lidar_nav2_bringup')) # 导航包的安装资源目录
-    bringup = LaunchConfiguration('bringup_params') # 管理器、启动门控和 RViz 共用的 YAML 配置路径
+    share = Path(get_package_share_directory('lidar_nav2_bringup'))      # 导航包的安装资源目录
+    bringup = LaunchConfiguration('bringup_params')      # 管理器、启动门控和 RViz 共用的 YAML 配置路径
     # 暴露配置文件路径，默认采用原生体素规划地图
     return LaunchDescription([
         DeclareLaunchArgument('bridge_params', default_value=str(share / 'config/bridge.yaml')),

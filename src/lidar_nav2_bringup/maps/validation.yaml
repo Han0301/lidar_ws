@@ -1,8 +1,8 @@
 # 静态验证地图的像素解释和坐标参数
-image: validation.pgm # 静态地图图像，相对当前 YAML 文件解析
-mode: trinary # 静态地图像素到栅格的转换模式
-resolution: 0.05 # 栅格分辨率（m/格）
-origin: [0.0, 0.0, 0.0] # 静态地图原点 [x,y,yaw]，单位 m、m、rad
-negate: 0 # 是否反转像素灰度与占据概率的关系
-occupied_thresh: 0.65 # 静态图判为占据的概率阈值
-free_thresh: 0.25 # 静态图判为自由的概率阈值
+image: validation.pgm      # 静态地图图像，相对当前 YAML 文件解析
+mode: trinary      # 静态地图像素到栅格的转换模式
+resolution: 0.05      # 栅格分辨率（m/格）
+origin: [0.0, 0.0, 0.0]      # 静态地图原点 [x,y,yaw]，单位 m、m、rad
+negate: 0      # 是否反转像素灰度与占据概率的关系
+occupied_thresh: 0.65      # 静态图判为占据的概率阈值
+free_thresh: 0.25      # 静态图判为自由的概率阈值

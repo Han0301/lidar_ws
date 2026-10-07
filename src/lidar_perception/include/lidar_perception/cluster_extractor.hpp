@@ -14,6 +14,6 @@ public:
   // 从当前障碍点云提取几何簇；不修改输入，也不跟踪历史身份
   std::vector<Object> extract(const Cloud::ConstPtr & cloud) const;
 private:
-  Parameters parameters_; // 聚类连接距离以及每个簇的点数上下限
+  Parameters parameters_;      // 聚类连接距离以及每个簇的点数上下限
 };
 }

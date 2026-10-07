@@ -13,8 +13,8 @@ from launch_ros.actions import Node
 
 # 一体启动感知、桥接和地面证据规划地图，只打开一个 RViz 窗口
 def generate_launch_description():
-    navigation = Path(get_package_share_directory('lidar_nav2_bringup')) # 导航包的安装目录，提供地面证据配置和组合视图
-    perception = Path(get_package_share_directory('lidar_perception')) # 感知包的安装目录，复用其参数与独立入口
+    navigation = Path(get_package_share_directory('lidar_nav2_bringup'))      # 导航包的安装目录，提供地面证据配置和组合视图
+    perception = Path(get_package_share_directory('lidar_perception'))      # 感知包的安装目录，复用其参数与独立入口
     # 默认选择地面证据候选地图，所有处理参数继续由 YAML 管理
     return LaunchDescription([
         DeclareLaunchArgument('perception_params',

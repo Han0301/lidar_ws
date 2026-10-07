@@ -20,9 +20,9 @@ public:
     const std::vector<ExclusionBox> & exclusions
   );
 private:
-  Parameters parameters_; // 本流水线使用的固定参数副本
-  GroundSegmenter ground_; // 估计参考地面并分离地面、障碍点
-  OperatorFilter operators_; // 检查点是否落入已配置的空间排除区域
-  ClusterExtractor clusters_; // 为障碍点生成几何簇与包围框
+  Parameters parameters_;      // 本流水线使用的固定参数副本
+  GroundSegmenter ground_;      // 估计参考地面并分离地面、障碍点
+  OperatorFilter operators_;      // 检查点是否落入已配置的空间排除区域
+  ClusterExtractor clusters_;      // 为障碍点生成几何簇与包围框
 };
 }

@@ -15,11 +15,11 @@ Result CloudPipeline::process
   const std::vector<ExclusionBox> & exclusions
 )
 {
-  const auto began = std::chrono::steady_clock::now(); // 单帧处理起点，用单调墙钟统计耗时
-  Result result; // 本帧点云、几何框、地面状态和统计的输出集合
+  const auto began = std::chrono::steady_clock::now();      // 单帧处理起点，用单调墙钟统计耗时
+  Result result;      // 本帧点云、几何框、地面状态和统计的输出集合
   result.input_points = body_cloud.size();
-  auto marking = std::make_shared<Cloud>(); // 经过区域排除后参与地面/障碍分类的调平点云
-  auto clearing = std::make_shared<Cloud>(); // 区域排除前的真实观测终点，避免向遮挡物后方补射线
+  auto marking = std::make_shared<Cloud>();      // 经过区域排除后参与地面/障碍分类的调平点云
+  auto clearing = std::make_shared<Cloud>();      // 区域排除前的真实观测终点，避免向遮挡物后方补射线
   // 逐点检查有限值和距离，再分别构造标记与清除输入
   for (const auto & source : body_cloud)
   {
@@ -27,13 +27,13 @@ Result CloudPipeline::process
     {
       continue;
     }
-    const double range = source.getVector3fMap().norm(); // 点到 body 原点的三维距离（m）
+    const double range = source.getVector3fMap().norm();      // 点到 body 原点的三维距离（m）
     if (range < parameters_.min_range || range > parameters_.max_range)
     {
       continue;
     }
     ++result.valid_points;
-    Point leveled = source; // 保留原始强度，仅将坐标变到调平参考系
+    Point leveled = source;      // 保留原始强度，仅将坐标变到调平参考系
     // 应用同一扫描时刻 TF，让地面高度判断不随手持雷达倾斜改变
     leveled.getVector3fMap() = level_from_body * source.getVector3fMap();
     clearing->push_back(leveled);
@@ -49,9 +49,9 @@ Result CloudPipeline::process
     }
   }
   // 仅对分类支路降采样，降低平面拟合与聚类开销
-  pcl::VoxelGrid<Point> voxel; // 以小体素内的代表点减少后续计算量
+  pcl::VoxelGrid<Point> voxel;      // 以小体素内的代表点减少后续计算量
   voxel.setLeafSize(parameters_.voxel_size, parameters_.voxel_size, parameters_.voxel_size);
-  auto reduced = std::make_shared<Cloud>(); // 降采样后的分类输入，不用于替换清除终点
+  auto reduced = std::make_shared<Cloud>();      // 降采样后的分类输入，不用于替换清除终点
   voxel.setInputCloud(marking);
   voxel.filter(*reduced);
   // 清除支路保留被区域过滤的真实终点，不把“删除障碍点”误当成“看到了更远处”

@@ -1,4 +1,4 @@
 # 实验性持机者空间排除候选，空间掩膜不等同于确认的人体身份，启用前需验证
 lidar_perception:
   ros__parameters:
-    self_box_body: [-0.90, -0.35, -0.25, 0.80, -0.10, 0.75] # 固定空间排除盒 [xmin,xmax,ymin,ymax,zmin,zmax]，body 坐标（m）
+    self_box_body: [-0.90, -0.35, -0.25, 0.80, -0.10, 0.75]      # 固定空间排除盒 [xmin,xmax,ymin,ymax,zmin,zmax]，body 坐标（m）

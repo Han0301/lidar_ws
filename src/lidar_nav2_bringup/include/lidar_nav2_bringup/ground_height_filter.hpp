@@ -42,7 +42,7 @@ public:
     return height_;
   }
 private:
-  bool initialized_ = false; // 是否已经接受第一条可信地面观测
-  double height_ = 0.0; // odom 坐标系下的滤波地面 Z 高度（m）
+  bool initialized_ = false;      // 是否已经接受第一条可信地面观测
+  double height_ = 0.0;      // odom 坐标系下的滤波地面 Z 高度（m）
 };
 }

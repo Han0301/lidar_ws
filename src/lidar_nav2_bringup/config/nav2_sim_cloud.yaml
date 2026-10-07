@@ -2,227 +2,227 @@
 local_costmap:
   local_costmap:
     ros__parameters:
-      use_sim_time: true # 使用 /clock 消息时间，与回放或仿真保持一致
-      update_frequency: 5.0 # 代价地图更新频率（Hz）
-      publish_frequency: 2.0 # 代价地图发布频率（Hz）
-      global_frame: odom # 该组件用于地图或导航计算的固定参考坐标系
-      robot_base_frame: nav_base # 虚拟导航参考坐标系，当前不代表已验证的真实底盘
-      rolling_window: true # 窗口是否随导航参考位置移动，true 时不是固定全局地图
-      width: 12 # 代价地图窗口宽度（m），固定静态图可能采用其自身尺寸
-      height: 12 # 代价地图窗口高度（m），固定静态图可能采用其自身尺寸
-      resolution: 0.1 # 栅格分辨率（m/格）
-      robot_radius: 0.25 # 评估用圆形足迹半径（m），接入底盘前需换成实测几何
-      transform_tolerance: 0.3 # 坐标变换容许时间误差（s）
-      initial_transform_timeout: 120.0 # 代价地图配置阶段等待初始 TF 的最长时间（ROS 时钟 s）
-      track_unknown_space: true # 保留缺少观测的未知栅格
-      always_send_full_costmap: true # 每次发送完整代价地图，便于 RViz 显示
-      plugins: # 按此顺序加载地图层，只有列入列表的层才会运行
+      use_sim_time: true      # 使用 /clock 消息时间，与回放或仿真保持一致
+      update_frequency: 5.0      # 代价地图更新频率（Hz）
+      publish_frequency: 2.0      # 代价地图发布频率（Hz）
+      global_frame: odom      # 该组件用于地图或导航计算的固定参考坐标系
+      robot_base_frame: nav_base      # 虚拟导航参考坐标系，当前不代表已验证的真实底盘
+      rolling_window: true      # 窗口是否随导航参考位置移动，true 时不是固定全局地图
+      width: 12      # 代价地图窗口宽度（m），固定静态图可能采用其自身尺寸
+      height: 12      # 代价地图窗口高度（m），固定静态图可能采用其自身尺寸
+      resolution: 0.1      # 栅格分辨率（m/格）
+      robot_radius: 0.25      # 评估用圆形足迹半径（m），接入底盘前需换成实测几何
+      transform_tolerance: 0.3      # 坐标变换容许时间误差（s）
+      initial_transform_timeout: 120.0      # 代价地图配置阶段等待初始 TF 的最长时间（ROS 时钟 s）
+      track_unknown_space: true      # 保留缺少观测的未知栅格
+      always_send_full_costmap: true      # 每次发送完整代价地图，便于 RViz 显示
+      plugins:      # 按此顺序加载地图层，只有列入列表的层才会运行
       - voxel_layer
       - inflation_layer
       voxel_layer:
-        plugin: nav2_costmap_2d::VoxelLayer # 由插件加载器创建的具体实现类型
-        enabled: true # 是否启用该地图层
-        publish_voxel_map: true # 是否额外发布三维体素调试消息
-        origin_z: -2.0 # 体素栅格底部 Z 高度（global_frame 坐标，m）
-        z_resolution: 0.35 # 竖直方向每层体素高度（m）
-        z_voxels: 16 # 每列竖直体素数量
-        max_obstacle_height: 3.5 # 观测参与地图处理的最大 Z（global_frame 坐标，m）
-        mark_threshold: 0 # 一列中标记体素数量超过此值时投影为障碍
-        unknown_threshold: 15 # 体素列用于判定未知状态的数量阈值
-        observation_sources: mark clear # 仅启用此处列出的观测源，未列出的 mark/clear/scan 配置不会订阅
+        plugin: nav2_costmap_2d::VoxelLayer      # 由插件加载器创建的具体实现类型
+        enabled: true      # 是否启用该地图层
+        publish_voxel_map: true      # 是否额外发布三维体素调试消息
+        origin_z: -2.0      # 体素栅格底部 Z 高度（global_frame 坐标，m）
+        z_resolution: 0.35      # 竖直方向每层体素高度（m）
+        z_voxels: 16      # 每列竖直体素数量
+        max_obstacle_height: 3.5      # 观测参与地图处理的最大 Z（global_frame 坐标，m）
+        mark_threshold: 0      # 一列中标记体素数量超过此值时投影为障碍
+        unknown_threshold: 15      # 体素列用于判定未知状态的数量阈值
+        observation_sources: mark clear      # 仅启用此处列出的观测源，未列出的 mark/clear/scan 配置不会订阅
         mark:
-          data_type: PointCloud2 # 观测消息类型 PointCloud2 或 LaserScan
-          sensor_frame: nav_sensor # 真实测量射线的起点坐标系，不能用虚拟地面原点代替
-          observation_persistence: 0.0 # 历史观测保留时长（s），0 使用最新观测
-          expected_update_rate: 0.5 # 预期观测最大更新间隔（s），不是 Hz，0 表示不检查
-          max_obstacle_height: 3.5 # 观测参与地图处理的最大 Z（global_frame 坐标，m）
-          min_obstacle_height: -2.0 # 观测参与地图处理的最小 Z（global_frame 坐标，m）
-          obstacle_min_range: 0.45 # 障碍标记使用的最小测距（m）
-          obstacle_max_range: 12.0 # 障碍标记使用的最大测距（m）
-          raytrace_min_range: 0.0 # 自由空间射线清除的最小测距（m）
-          raytrace_max_range: 15.0 # 自由空间射线清除的最大测距（m）
-          topic: /perception/obstacles # 障碍标记点云输入
-          marking: true # 该观测源是否用于标记障碍
-          clearing: false # 该观测源是否沿真实测量射线清除旧障碍
+          data_type: PointCloud2      # 观测消息类型 PointCloud2 或 LaserScan
+          sensor_frame: nav_sensor      # 真实测量射线的起点坐标系，不能用虚拟地面原点代替
+          observation_persistence: 0.0      # 历史观测保留时长（s），0 使用最新观测
+          expected_update_rate: 0.5      # 预期观测最大更新间隔（s），不是 Hz，0 表示不检查
+          max_obstacle_height: 3.5      # 观测参与地图处理的最大 Z（global_frame 坐标，m）
+          min_obstacle_height: -2.0      # 观测参与地图处理的最小 Z（global_frame 坐标，m）
+          obstacle_min_range: 0.45      # 障碍标记使用的最小测距（m）
+          obstacle_max_range: 12.0      # 障碍标记使用的最大测距（m）
+          raytrace_min_range: 0.0      # 自由空间射线清除的最小测距（m）
+          raytrace_max_range: 15.0      # 自由空间射线清除的最大测距（m）
+          topic: /perception/obstacles      # 障碍标记点云输入
+          marking: true      # 该观测源是否用于标记障碍
+          clearing: false      # 该观测源是否沿真实测量射线清除旧障碍
         clear:
-          data_type: PointCloud2 # 观测消息类型 PointCloud2 或 LaserScan
-          sensor_frame: nav_sensor # 真实测量射线的起点坐标系，不能用虚拟地面原点代替
-          observation_persistence: 0.0 # 历史观测保留时长（s），0 使用最新观测
-          expected_update_rate: 0.5 # 预期观测最大更新间隔（s），不是 Hz，0 表示不检查
-          max_obstacle_height: 3.5 # 观测参与地图处理的最大 Z（global_frame 坐标，m）
-          min_obstacle_height: -2.0 # 观测参与地图处理的最小 Z（global_frame 坐标，m）
-          obstacle_min_range: 0.45 # 障碍标记使用的最小测距（m）
-          obstacle_max_range: 12.0 # 障碍标记使用的最大测距（m）
-          raytrace_min_range: 0.0 # 自由空间射线清除的最小测距（m）
-          raytrace_max_range: 15.0 # 自由空间射线清除的最大测距（m）
-          topic: /perception/clearing # 区域排除前的真实回波终点输入
-          marking: false # 该观测源是否用于标记障碍
-          clearing: true # 该观测源是否沿真实测量射线清除旧障碍
+          data_type: PointCloud2      # 观测消息类型 PointCloud2 或 LaserScan
+          sensor_frame: nav_sensor      # 真实测量射线的起点坐标系，不能用虚拟地面原点代替
+          observation_persistence: 0.0      # 历史观测保留时长（s），0 使用最新观测
+          expected_update_rate: 0.5      # 预期观测最大更新间隔（s），不是 Hz，0 表示不检查
+          max_obstacle_height: 3.5      # 观测参与地图处理的最大 Z（global_frame 坐标，m）
+          min_obstacle_height: -2.0      # 观测参与地图处理的最小 Z（global_frame 坐标，m）
+          obstacle_min_range: 0.45      # 障碍标记使用的最小测距（m）
+          obstacle_max_range: 12.0      # 障碍标记使用的最大测距（m）
+          raytrace_min_range: 0.0      # 自由空间射线清除的最小测距（m）
+          raytrace_max_range: 15.0      # 自由空间射线清除的最大测距（m）
+          topic: /perception/clearing      # 区域排除前的真实回波终点输入
+          marking: false      # 该观测源是否用于标记障碍
+          clearing: true      # 该观测源是否沿真实测量射线清除旧障碍
         scan:
-          data_type: LaserScan # 观测消息类型 PointCloud2 或 LaserScan
-          topic: /scan # 激光扫描观测输入
-          sensor_frame: nav_sensor # 真实测量射线的起点坐标系，不能用虚拟地面原点代替
-          marking: true # 该观测源是否用于标记障碍
-          clearing: true # 该观测源是否沿真实测量射线清除旧障碍
-          max_obstacle_height: 3.5 # 观测参与地图处理的最大 Z（global_frame 坐标，m）
-          obstacle_max_range: 12.0 # 障碍标记使用的最大测距（m）
-          raytrace_max_range: 15.0 # 自由空间射线清除的最大测距（m）
-          observation_persistence: 0.0 # 历史观测保留时长（s），0 使用最新观测
-          expected_update_rate: 0.5 # 预期观测最大更新间隔（s），不是 Hz，0 表示不检查
-          inf_is_valid: true # 是否接受 LaserScan 的正无穷回波用于远端清除
-          min_obstacle_height: -2.0 # 观测参与地图处理的最小 Z（global_frame 坐标，m）
-          raytrace_min_range: 0.0 # 自由空间射线清除的最小测距（m）
+          data_type: LaserScan      # 观测消息类型 PointCloud2 或 LaserScan
+          topic: /scan      # 激光扫描观测输入
+          sensor_frame: nav_sensor      # 真实测量射线的起点坐标系，不能用虚拟地面原点代替
+          marking: true      # 该观测源是否用于标记障碍
+          clearing: true      # 该观测源是否沿真实测量射线清除旧障碍
+          max_obstacle_height: 3.5      # 观测参与地图处理的最大 Z（global_frame 坐标，m）
+          obstacle_max_range: 12.0      # 障碍标记使用的最大测距（m）
+          raytrace_max_range: 15.0      # 自由空间射线清除的最大测距（m）
+          observation_persistence: 0.0      # 历史观测保留时长（s），0 使用最新观测
+          expected_update_rate: 0.5      # 预期观测最大更新间隔（s），不是 Hz，0 表示不检查
+          inf_is_valid: true      # 是否接受 LaserScan 的正无穷回波用于远端清除
+          min_obstacle_height: -2.0      # 观测参与地图处理的最小 Z（global_frame 坐标，m）
+          raytrace_min_range: 0.0      # 自由空间射线清除的最小测距（m）
       inflation_layer:
-        plugin: nav2_costmap_2d::InflationLayer # 由插件加载器创建的具体实现类型
-        inflation_radius: 0.55 # 障碍周围生成距离代价的半径（m）
-        cost_scaling_factor: 3.0 # 膨胀代价的指数衰减系数，越大则随距离下降越快
+        plugin: nav2_costmap_2d::InflationLayer      # 由插件加载器创建的具体实现类型
+        inflation_radius: 0.55      # 障碍周围生成距离代价的半径（m）
+        cost_scaling_factor: 3.0      # 膨胀代价的指数衰减系数，越大则随距离下降越快
       static_layer:
-        plugin: nav2_costmap_2d::StaticLayer # 由插件加载器创建的具体实现类型
-        map_subscribe_transient_local: true # 使用持久化订阅接收静态地图的最近一次发布
+        plugin: nav2_costmap_2d::StaticLayer      # 由插件加载器创建的具体实现类型
+        map_subscribe_transient_local: true      # 使用持久化订阅接收静态地图的最近一次发布
 global_costmap:
   global_costmap:
     ros__parameters:
-      use_sim_time: true # 使用 /clock 消息时间，与回放或仿真保持一致
-      update_frequency: 5.0 # 代价地图更新频率（Hz）
-      publish_frequency: 2.0 # 代价地图发布频率（Hz）
-      global_frame: map # 该组件用于地图或导航计算的固定参考坐标系
-      robot_base_frame: nav_base # 虚拟导航参考坐标系，当前不代表已验证的真实底盘
-      rolling_window: false # 窗口是否随导航参考位置移动，true 时不是固定全局地图
-      width: 12 # 代价地图窗口宽度（m），固定静态图可能采用其自身尺寸
-      height: 12 # 代价地图窗口高度（m），固定静态图可能采用其自身尺寸
-      resolution: 0.1 # 栅格分辨率（m/格）
-      robot_radius: 0.25 # 评估用圆形足迹半径（m），接入底盘前需换成实测几何
-      transform_tolerance: 0.3 # 坐标变换容许时间误差（s）
-      initial_transform_timeout: 120.0 # 代价地图配置阶段等待初始 TF 的最长时间（ROS 时钟 s）
-      track_unknown_space: true # 保留缺少观测的未知栅格
-      always_send_full_costmap: true # 每次发送完整代价地图，便于 RViz 显示
-      plugins: # 按此顺序加载地图层，只有列入列表的层才会运行
+      use_sim_time: true      # 使用 /clock 消息时间，与回放或仿真保持一致
+      update_frequency: 5.0      # 代价地图更新频率（Hz）
+      publish_frequency: 2.0      # 代价地图发布频率（Hz）
+      global_frame: map      # 该组件用于地图或导航计算的固定参考坐标系
+      robot_base_frame: nav_base      # 虚拟导航参考坐标系，当前不代表已验证的真实底盘
+      rolling_window: false      # 窗口是否随导航参考位置移动，true 时不是固定全局地图
+      width: 12      # 代价地图窗口宽度（m），固定静态图可能采用其自身尺寸
+      height: 12      # 代价地图窗口高度（m），固定静态图可能采用其自身尺寸
+      resolution: 0.1      # 栅格分辨率（m/格）
+      robot_radius: 0.25      # 评估用圆形足迹半径（m），接入底盘前需换成实测几何
+      transform_tolerance: 0.3      # 坐标变换容许时间误差（s）
+      initial_transform_timeout: 120.0      # 代价地图配置阶段等待初始 TF 的最长时间（ROS 时钟 s）
+      track_unknown_space: true      # 保留缺少观测的未知栅格
+      always_send_full_costmap: true      # 每次发送完整代价地图，便于 RViz 显示
+      plugins:      # 按此顺序加载地图层，只有列入列表的层才会运行
       - static_layer
       - voxel_layer
       - inflation_layer
       voxel_layer:
-        plugin: nav2_costmap_2d::VoxelLayer # 由插件加载器创建的具体实现类型
-        enabled: true # 是否启用该地图层
-        publish_voxel_map: true # 是否额外发布三维体素调试消息
-        origin_z: -2.0 # 体素栅格底部 Z 高度（global_frame 坐标，m）
-        z_resolution: 0.35 # 竖直方向每层体素高度（m）
-        z_voxels: 16 # 每列竖直体素数量
-        max_obstacle_height: 3.5 # 观测参与地图处理的最大 Z（global_frame 坐标，m）
-        mark_threshold: 0 # 一列中标记体素数量超过此值时投影为障碍
-        unknown_threshold: 15 # 体素列用于判定未知状态的数量阈值
-        observation_sources: mark clear # 仅启用此处列出的观测源，未列出的 mark/clear/scan 配置不会订阅
+        plugin: nav2_costmap_2d::VoxelLayer      # 由插件加载器创建的具体实现类型
+        enabled: true      # 是否启用该地图层
+        publish_voxel_map: true      # 是否额外发布三维体素调试消息
+        origin_z: -2.0      # 体素栅格底部 Z 高度（global_frame 坐标，m）
+        z_resolution: 0.35      # 竖直方向每层体素高度（m）
+        z_voxels: 16      # 每列竖直体素数量
+        max_obstacle_height: 3.5      # 观测参与地图处理的最大 Z（global_frame 坐标，m）
+        mark_threshold: 0      # 一列中标记体素数量超过此值时投影为障碍
+        unknown_threshold: 15      # 体素列用于判定未知状态的数量阈值
+        observation_sources: mark clear      # 仅启用此处列出的观测源，未列出的 mark/clear/scan 配置不会订阅
         mark:
-          data_type: PointCloud2 # 观测消息类型 PointCloud2 或 LaserScan
-          sensor_frame: nav_sensor # 真实测量射线的起点坐标系，不能用虚拟地面原点代替
-          observation_persistence: 0.0 # 历史观测保留时长（s），0 使用最新观测
-          expected_update_rate: 0.5 # 预期观测最大更新间隔（s），不是 Hz，0 表示不检查
-          max_obstacle_height: 3.5 # 观测参与地图处理的最大 Z（global_frame 坐标，m）
-          min_obstacle_height: -2.0 # 观测参与地图处理的最小 Z（global_frame 坐标，m）
-          obstacle_min_range: 0.45 # 障碍标记使用的最小测距（m）
-          obstacle_max_range: 12.0 # 障碍标记使用的最大测距（m）
-          raytrace_min_range: 0.0 # 自由空间射线清除的最小测距（m）
-          raytrace_max_range: 15.0 # 自由空间射线清除的最大测距（m）
-          topic: /perception/obstacles # 障碍标记点云输入
-          marking: true # 该观测源是否用于标记障碍
-          clearing: false # 该观测源是否沿真实测量射线清除旧障碍
+          data_type: PointCloud2      # 观测消息类型 PointCloud2 或 LaserScan
+          sensor_frame: nav_sensor      # 真实测量射线的起点坐标系，不能用虚拟地面原点代替
+          observation_persistence: 0.0      # 历史观测保留时长（s），0 使用最新观测
+          expected_update_rate: 0.5      # 预期观测最大更新间隔（s），不是 Hz，0 表示不检查
+          max_obstacle_height: 3.5      # 观测参与地图处理的最大 Z（global_frame 坐标，m）
+          min_obstacle_height: -2.0      # 观测参与地图处理的最小 Z（global_frame 坐标，m）
+          obstacle_min_range: 0.45      # 障碍标记使用的最小测距（m）
+          obstacle_max_range: 12.0      # 障碍标记使用的最大测距（m）
+          raytrace_min_range: 0.0      # 自由空间射线清除的最小测距（m）
+          raytrace_max_range: 15.0      # 自由空间射线清除的最大测距（m）
+          topic: /perception/obstacles      # 障碍标记点云输入
+          marking: true      # 该观测源是否用于标记障碍
+          clearing: false      # 该观测源是否沿真实测量射线清除旧障碍
         clear:
-          data_type: PointCloud2 # 观测消息类型 PointCloud2 或 LaserScan
-          sensor_frame: nav_sensor # 真实测量射线的起点坐标系，不能用虚拟地面原点代替
-          observation_persistence: 0.0 # 历史观测保留时长（s），0 使用最新观测
-          expected_update_rate: 0.5 # 预期观测最大更新间隔（s），不是 Hz，0 表示不检查
-          max_obstacle_height: 3.5 # 观测参与地图处理的最大 Z（global_frame 坐标，m）
-          min_obstacle_height: -2.0 # 观测参与地图处理的最小 Z（global_frame 坐标，m）
-          obstacle_min_range: 0.45 # 障碍标记使用的最小测距（m）
-          obstacle_max_range: 12.0 # 障碍标记使用的最大测距（m）
-          raytrace_min_range: 0.0 # 自由空间射线清除的最小测距（m）
-          raytrace_max_range: 15.0 # 自由空间射线清除的最大测距（m）
-          topic: /perception/clearing # 区域排除前的真实回波终点输入
-          marking: false # 该观测源是否用于标记障碍
-          clearing: true # 该观测源是否沿真实测量射线清除旧障碍
+          data_type: PointCloud2      # 观测消息类型 PointCloud2 或 LaserScan
+          sensor_frame: nav_sensor      # 真实测量射线的起点坐标系，不能用虚拟地面原点代替
+          observation_persistence: 0.0      # 历史观测保留时长（s），0 使用最新观测
+          expected_update_rate: 0.5      # 预期观测最大更新间隔（s），不是 Hz，0 表示不检查
+          max_obstacle_height: 3.5      # 观测参与地图处理的最大 Z（global_frame 坐标，m）
+          min_obstacle_height: -2.0      # 观测参与地图处理的最小 Z（global_frame 坐标，m）
+          obstacle_min_range: 0.45      # 障碍标记使用的最小测距（m）
+          obstacle_max_range: 12.0      # 障碍标记使用的最大测距（m）
+          raytrace_min_range: 0.0      # 自由空间射线清除的最小测距（m）
+          raytrace_max_range: 15.0      # 自由空间射线清除的最大测距（m）
+          topic: /perception/clearing      # 区域排除前的真实回波终点输入
+          marking: false      # 该观测源是否用于标记障碍
+          clearing: true      # 该观测源是否沿真实测量射线清除旧障碍
         scan:
-          data_type: LaserScan # 观测消息类型 PointCloud2 或 LaserScan
-          topic: /scan # 激光扫描观测输入
-          sensor_frame: nav_sensor # 真实测量射线的起点坐标系，不能用虚拟地面原点代替
-          marking: true # 该观测源是否用于标记障碍
-          clearing: true # 该观测源是否沿真实测量射线清除旧障碍
-          max_obstacle_height: 3.5 # 观测参与地图处理的最大 Z（global_frame 坐标，m）
-          obstacle_max_range: 12.0 # 障碍标记使用的最大测距（m）
-          raytrace_max_range: 15.0 # 自由空间射线清除的最大测距（m）
-          observation_persistence: 0.0 # 历史观测保留时长（s），0 使用最新观测
-          expected_update_rate: 0.5 # 预期观测最大更新间隔（s），不是 Hz，0 表示不检查
-          inf_is_valid: true # 是否接受 LaserScan 的正无穷回波用于远端清除
-          min_obstacle_height: -2.0 # 观测参与地图处理的最小 Z（global_frame 坐标，m）
-          raytrace_min_range: 0.0 # 自由空间射线清除的最小测距（m）
+          data_type: LaserScan      # 观测消息类型 PointCloud2 或 LaserScan
+          topic: /scan      # 激光扫描观测输入
+          sensor_frame: nav_sensor      # 真实测量射线的起点坐标系，不能用虚拟地面原点代替
+          marking: true      # 该观测源是否用于标记障碍
+          clearing: true      # 该观测源是否沿真实测量射线清除旧障碍
+          max_obstacle_height: 3.5      # 观测参与地图处理的最大 Z（global_frame 坐标，m）
+          obstacle_max_range: 12.0      # 障碍标记使用的最大测距（m）
+          raytrace_max_range: 15.0      # 自由空间射线清除的最大测距（m）
+          observation_persistence: 0.0      # 历史观测保留时长（s），0 使用最新观测
+          expected_update_rate: 0.5      # 预期观测最大更新间隔（s），不是 Hz，0 表示不检查
+          inf_is_valid: true      # 是否接受 LaserScan 的正无穷回波用于远端清除
+          min_obstacle_height: -2.0      # 观测参与地图处理的最小 Z（global_frame 坐标，m）
+          raytrace_min_range: 0.0      # 自由空间射线清除的最小测距（m）
       inflation_layer:
-        plugin: nav2_costmap_2d::InflationLayer # 由插件加载器创建的具体实现类型
-        inflation_radius: 0.55 # 障碍周围生成距离代价的半径（m）
-        cost_scaling_factor: 3.0 # 膨胀代价的指数衰减系数，越大则随距离下降越快
+        plugin: nav2_costmap_2d::InflationLayer      # 由插件加载器创建的具体实现类型
+        inflation_radius: 0.55      # 障碍周围生成距离代价的半径（m）
+        cost_scaling_factor: 3.0      # 膨胀代价的指数衰减系数，越大则随距离下降越快
       static_layer:
-        plugin: nav2_costmap_2d::StaticLayer # 由插件加载器创建的具体实现类型
-        map_subscribe_transient_local: true # 使用持久化订阅接收静态地图的最近一次发布
+        plugin: nav2_costmap_2d::StaticLayer      # 由插件加载器创建的具体实现类型
+        map_subscribe_transient_local: true      # 使用持久化订阅接收静态地图的最近一次发布
 planner_server:
   ros__parameters:
-    use_sim_time: true # 使用 /clock 消息时间，与回放或仿真保持一致
-    expected_planner_frequency: 5.0 # 规划频率预期（Hz），用于检测规划耗时超限
-    planner_plugins: # 加载的全局规划器名称列表
+    use_sim_time: true      # 使用 /clock 消息时间，与回放或仿真保持一致
+    expected_planner_frequency: 5.0      # 规划频率预期（Hz），用于检测规划耗时超限
+    planner_plugins:      # 加载的全局规划器名称列表
     - GridBased
     GridBased:
-      plugin: nav2_navfn_planner::NavfnPlanner # 由插件加载器创建的具体实现类型
-      tolerance: 0.2 # 目标附近允许搜索替代终点的距离（m）
-      use_astar: true # 使用 A* 搜索，否则采用 Dijkstra 搜索
-      allow_unknown: false # 是否允许路径经过未知栅格
+      plugin: nav2_navfn_planner::NavfnPlanner      # 由插件加载器创建的具体实现类型
+      tolerance: 0.2      # 目标附近允许搜索替代终点的距离（m）
+      use_astar: true      # 使用 A* 搜索，否则采用 Dijkstra 搜索
+      allow_unknown: false      # 是否允许路径经过未知栅格
 controller_server:
   ros__parameters:
-    use_sim_time: true # 使用 /clock 消息时间，与回放或仿真保持一致
-    enable_stamped_cmd_vel: false # 速度消息是否携带时间戳，false 使用 Twist
-    odom_topic: /odom # 位姿输入话题，名称须与对应里程计发布端一致
-    controller_frequency: 10.0 # 局部控制循环频率（Hz）
-    min_x_velocity_threshold: 0.001 # 里程计 X 速度低于此值时按零处理（m/s）
-    min_y_velocity_threshold: 0.001 # 里程计 Y 速度低于此值时按零处理（m/s）
-    min_theta_velocity_threshold: 0.001 # 里程计角速度低于此值时按零处理（rad/s）
-    progress_checker_plugins: # 检测是否持续移动的插件列表
+    use_sim_time: true      # 使用 /clock 消息时间，与回放或仿真保持一致
+    enable_stamped_cmd_vel: false      # 速度消息是否携带时间戳，false 使用 Twist
+    odom_topic: /odom      # 位姿输入话题，名称须与对应里程计发布端一致
+    controller_frequency: 10.0      # 局部控制循环频率（Hz）
+    min_x_velocity_threshold: 0.001      # 里程计 X 速度低于此值时按零处理（m/s）
+    min_y_velocity_threshold: 0.001      # 里程计 Y 速度低于此值时按零处理（m/s）
+    min_theta_velocity_threshold: 0.001      # 里程计角速度低于此值时按零处理（rad/s）
+    progress_checker_plugins:      # 检测是否持续移动的插件列表
     - progress_checker
-    goal_checker_plugins: # 检测是否到达目标的插件列表
+    goal_checker_plugins:      # 检测是否到达目标的插件列表
     - goal_checker
-    controller_plugins: # 计算跟踪速度的局部控制器列表
+    controller_plugins:      # 计算跟踪速度的局部控制器列表
     - FollowPath
     progress_checker:
-      plugin: nav2_controller::SimpleProgressChecker # 由插件加载器创建的具体实现类型
-      required_movement_radius: 0.15 # 判断有进展所需的最小位移（m）
-      movement_time_allowance: 15.0 # 允许没有足够位移的最长时间（s）
+      plugin: nav2_controller::SimpleProgressChecker      # 由插件加载器创建的具体实现类型
+      required_movement_radius: 0.15      # 判断有进展所需的最小位移（m）
+      movement_time_allowance: 15.0      # 允许没有足够位移的最长时间（s）
     goal_checker:
-      plugin: nav2_controller::SimpleGoalChecker # 由插件加载器创建的具体实现类型
-      xy_goal_tolerance: 0.15 # 目标平面位置误差容限（m）
-      yaw_goal_tolerance: 0.2 # 目标航向误差容限（rad）
-      stateful: true # 保留插件状态，具体阶段切换由对应插件实现
+      plugin: nav2_controller::SimpleGoalChecker      # 由插件加载器创建的具体实现类型
+      xy_goal_tolerance: 0.15      # 目标平面位置误差容限（m）
+      yaw_goal_tolerance: 0.2      # 目标航向误差容限（rad）
+      stateful: true      # 保留插件状态，具体阶段切换由对应插件实现
     FollowPath:
-      plugin: dwb_core::DWBLocalPlanner # 由插件加载器创建的具体实现类型
-      min_vel_x: 0.0 # x 方向最小速度（m/s）
-      min_vel_y: 0.0 # y 方向最小速度（m/s）
-      max_vel_x: 0.4 # x 方向最大速度（m/s）
-      max_vel_y: 0.0 # y 方向最大速度（m/s）
-      max_vel_theta: 1.0 # theta 方向最大速度（rad/s）
-      min_speed_xy: 0.0 # 局部轨迹速度幅值限制（m/s）
-      max_speed_xy: 0.4 # 局部轨迹速度幅值限制（m/s）
-      min_speed_theta: 0.0 # 局部轨迹速度幅值限制（rad/s）
-      acc_lim_x: 1.0 # x 方向加速度上限（m/s²）
-      acc_lim_y: 0.0 # y 方向加速度上限（m/s²）
-      acc_lim_theta: 2.0 # theta 方向加速度上限（rad/s²）
-      decel_lim_x: -1.0 # x 方向减速度限制，按插件约定保留符号（m/s²）
-      decel_lim_y: 0.0 # y 方向减速度限制，按插件约定保留符号（m/s²）
-      decel_lim_theta: -2.0 # theta 方向减速度限制，按插件约定保留符号（rad/s²）
-      vx_samples: 15 # X 方向速度候选数量
-      vy_samples: 1 # Y 方向速度候选数量
-      vtheta_samples: 20 # 角速度候选数量
-      sim_time: 1.5 # 局部候选轨迹向前模拟的时长（s）
-      linear_granularity: 0.05 # 轨迹采样的线位移间隔（m）
-      angular_granularity: 0.05 # 轨迹采样的角度间隔（rad）
-      transform_tolerance: 0.3 # 坐标变换容许时间误差（s）
-      xy_goal_tolerance: 0.15 # 目标平面位置误差容限（m）
-      trans_stopped_velocity: 0.03 # 判定平移停止的速度阈值（m/s）
-      short_circuit_trajectory_evaluation: true # 候选代价已超过当前最优时提前结束评分
-      stateful: true # 保留插件状态，具体阶段切换由对应插件实现
-      critics: # 局部候选轨迹的评分项列表
+      plugin: dwb_core::DWBLocalPlanner      # 由插件加载器创建的具体实现类型
+      min_vel_x: 0.0      # x 方向最小速度（m/s）
+      min_vel_y: 0.0      # y 方向最小速度（m/s）
+      max_vel_x: 0.4      # x 方向最大速度（m/s）
+      max_vel_y: 0.0      # y 方向最大速度（m/s）
+      max_vel_theta: 1.0      # theta 方向最大速度（rad/s）
+      min_speed_xy: 0.0      # 局部轨迹速度幅值限制（m/s）
+      max_speed_xy: 0.4      # 局部轨迹速度幅值限制（m/s）
+      min_speed_theta: 0.0      # 局部轨迹速度幅值限制（rad/s）
+      acc_lim_x: 1.0      # x 方向加速度上限（m/s²）
+      acc_lim_y: 0.0      # y 方向加速度上限（m/s²）
+      acc_lim_theta: 2.0      # theta 方向加速度上限（rad/s²）
+      decel_lim_x: -1.0      # x 方向减速度限制，按插件约定保留符号（m/s²）
+      decel_lim_y: 0.0      # y 方向减速度限制，按插件约定保留符号（m/s²）
+      decel_lim_theta: -2.0      # theta 方向减速度限制，按插件约定保留符号（rad/s²）
+      vx_samples: 15      # X 方向速度候选数量
+      vy_samples: 1      # Y 方向速度候选数量
+      vtheta_samples: 20      # 角速度候选数量
+      sim_time: 1.5      # 局部候选轨迹向前模拟的时长（s）
+      linear_granularity: 0.05      # 轨迹采样的线位移间隔（m）
+      angular_granularity: 0.05      # 轨迹采样的角度间隔（rad）
+      transform_tolerance: 0.3      # 坐标变换容许时间误差（s）
+      xy_goal_tolerance: 0.15      # 目标平面位置误差容限（m）
+      trans_stopped_velocity: 0.03      # 判定平移停止的速度阈值（m/s）
+      short_circuit_trajectory_evaluation: true      # 候选代价已超过当前最优时提前结束评分
+      stateful: true      # 保留插件状态，具体阶段切换由对应插件实现
+      critics:      # 局部候选轨迹的评分项列表
       - RotateToGoal
       - Oscillation
       - BaseObstacle
@@ -230,70 +230,70 @@ controller_server:
       - PathAlign
       - PathDist
       - GoalDist
-      BaseObstacle.scale: 0.04 # 该轨迹评分项的相对权重
-      PathAlign.scale: 24.0 # 该轨迹评分项的相对权重
-      PathAlign.forward_point_distance: 0.1 # 轨迹对齐评分使用的前向参考点距离（m）
-      GoalAlign.scale: 16.0 # 该轨迹评分项的相对权重
-      GoalAlign.forward_point_distance: 0.1 # 轨迹对齐评分使用的前向参考点距离（m）
-      PathDist.scale: 24.0 # 该轨迹评分项的相对权重
-      GoalDist.scale: 16.0 # 该轨迹评分项的相对权重
-      RotateToGoal.scale: 24.0 # 该轨迹评分项的相对权重
-      RotateToGoal.slowing_factor: 5.0 # 接近目标时旋转评分的减速惩罚系数
-      RotateToGoal.lookahead_time: -1.0 # 旋转评分前瞻时间（s），负值采用插件的整段轨迹检查
+      BaseObstacle.scale: 0.04      # 该轨迹评分项的相对权重
+      PathAlign.scale: 24.0      # 该轨迹评分项的相对权重
+      PathAlign.forward_point_distance: 0.1      # 轨迹对齐评分使用的前向参考点距离（m）
+      GoalAlign.scale: 16.0      # 该轨迹评分项的相对权重
+      GoalAlign.forward_point_distance: 0.1      # 轨迹对齐评分使用的前向参考点距离（m）
+      PathDist.scale: 24.0      # 该轨迹评分项的相对权重
+      GoalDist.scale: 16.0      # 该轨迹评分项的相对权重
+      RotateToGoal.scale: 24.0      # 该轨迹评分项的相对权重
+      RotateToGoal.slowing_factor: 5.0      # 接近目标时旋转评分的减速惩罚系数
+      RotateToGoal.lookahead_time: -1.0      # 旋转评分前瞻时间（s），负值采用插件的整段轨迹检查
 bt_navigator:
   ros__parameters:
-    use_sim_time: true # 使用 /clock 消息时间，与回放或仿真保持一致
-    global_frame: map # 该组件用于地图或导航计算的固定参考坐标系
-    robot_base_frame: nav_base # 虚拟导航参考坐标系，当前不代表已验证的真实底盘
-    odom_topic: /odom # 位姿输入话题，名称须与对应里程计发布端一致
-    bt_loop_duration: 10 # 行为树每轮执行间隔（ms）
-    default_server_timeout: 20 # 行为树服务调用的默认等待时间（ms）
-    navigators: # 行为树导航任务插件列表
+    use_sim_time: true      # 使用 /clock 消息时间，与回放或仿真保持一致
+    global_frame: map      # 该组件用于地图或导航计算的固定参考坐标系
+    robot_base_frame: nav_base      # 虚拟导航参考坐标系，当前不代表已验证的真实底盘
+    odom_topic: /odom      # 位姿输入话题，名称须与对应里程计发布端一致
+    bt_loop_duration: 10      # 行为树每轮执行间隔（ms）
+    default_server_timeout: 20      # 行为树服务调用的默认等待时间（ms）
+    navigators:      # 行为树导航任务插件列表
     - navigate_to_pose
     navigate_to_pose:
-      plugin: nav2_bt_navigator::NavigateToPoseNavigator # 由插件加载器创建的具体实现类型
+      plugin: nav2_bt_navigator::NavigateToPoseNavigator      # 由插件加载器创建的具体实现类型
 behavior_server:
   ros__parameters:
-    use_sim_time: true # 使用 /clock 消息时间，与回放或仿真保持一致
-    enable_stamped_cmd_vel: false # 速度消息是否携带时间戳，false 使用 Twist
-    local_costmap_topic: local_costmap/costmap_raw # 恢复行为读取的局部原始代价地图
-    global_costmap_topic: global_costmap/costmap_raw # 恢复行为读取的全局原始代价地图
-    local_footprint_topic: local_costmap/published_footprint # 恢复行为读取的局部导航足迹
-    global_footprint_topic: global_costmap/published_footprint # 恢复行为读取的全局导航足迹
-    cycle_frequency: 10.0 # 恢复行为执行频率（Hz）
-    behavior_plugins: # 可用恢复行为插件列表
+    use_sim_time: true      # 使用 /clock 消息时间，与回放或仿真保持一致
+    enable_stamped_cmd_vel: false      # 速度消息是否携带时间戳，false 使用 Twist
+    local_costmap_topic: local_costmap/costmap_raw      # 恢复行为读取的局部原始代价地图
+    global_costmap_topic: global_costmap/costmap_raw      # 恢复行为读取的全局原始代价地图
+    local_footprint_topic: local_costmap/published_footprint      # 恢复行为读取的局部导航足迹
+    global_footprint_topic: global_costmap/published_footprint      # 恢复行为读取的全局导航足迹
+    cycle_frequency: 10.0      # 恢复行为执行频率（Hz）
+    behavior_plugins:      # 可用恢复行为插件列表
     - spin
     - backup
     - wait
     spin:
-      plugin: nav2_behaviors::Spin # 由插件加载器创建的具体实现类型
+      plugin: nav2_behaviors::Spin      # 由插件加载器创建的具体实现类型
     backup:
-      plugin: nav2_behaviors::BackUp # 由插件加载器创建的具体实现类型
+      plugin: nav2_behaviors::BackUp      # 由插件加载器创建的具体实现类型
     wait:
-      plugin: nav2_behaviors::Wait # 由插件加载器创建的具体实现类型
-    local_frame: odom # 局部行为计算的参考坐标系
-    global_frame: map # 该组件用于地图或导航计算的固定参考坐标系
-    robot_base_frame: nav_base # 虚拟导航参考坐标系，当前不代表已验证的真实底盘
-    transform_tolerance: 0.3 # 坐标变换容许时间误差（s）
-    simulate_ahead_time: 2.0 # 恢复行为碰撞检查向前预测的时间（s）
-    max_rotational_vel: 1.0 # 恢复行为的最大旋转速度（rad/s）
-    min_rotational_vel: 0.2 # 恢复行为的最小旋转速度（rad/s）
-    rotational_acc_lim: 2.0 # 恢复行为旋转加速度上限（rad/s²）
+      plugin: nav2_behaviors::Wait      # 由插件加载器创建的具体实现类型
+    local_frame: odom      # 局部行为计算的参考坐标系
+    global_frame: map      # 该组件用于地图或导航计算的固定参考坐标系
+    robot_base_frame: nav_base      # 虚拟导航参考坐标系，当前不代表已验证的真实底盘
+    transform_tolerance: 0.3      # 坐标变换容许时间误差（s）
+    simulate_ahead_time: 2.0      # 恢复行为碰撞检查向前预测的时间（s）
+    max_rotational_vel: 1.0      # 恢复行为的最大旋转速度（rad/s）
+    min_rotational_vel: 0.2      # 恢复行为的最小旋转速度（rad/s）
+    rotational_acc_lim: 2.0      # 恢复行为旋转加速度上限（rad/s²）
 map_server:
   ros__parameters:
-    use_sim_time: true # 使用 /clock 消息时间，与回放或仿真保持一致
-    yaml_filename: '' # 静态地图 YAML 路径，由启动文件传入
+    use_sim_time: true      # 使用 /clock 消息时间，与回放或仿真保持一致
+    yaml_filename: ''      # 静态地图 YAML 路径，由启动文件传入
 loopback_simulator:
   ros__parameters:
-    base_frame_id: nav_base # 仿真中的导航参考坐标系
-    odom_frame_id: odom # 仿真里程计坐标系
-    map_frame_id: map # 仿真全局地图坐标系
-    scan_frame_id: nav_sensor # 仿真扫描原点坐标系
-    update_duration: 0.02 # 仿真位姿更新周期（s）
-    scan_publish_duration: 0.1 # 仿真激光扫描发布周期（s）
-    scan_range_min: 0.05 # 仿真扫描最小量程（m）
-    scan_range_max: 15.0 # 仿真扫描最大量程（m）
-    scan_angle_increment: 0.01745 # 仿真相邻激光束角间隔（rad）
-    scan_use_inf: true # 无命中射线使用无穷远表示
-    publish_clock: true # 由仿真器发布 /clock
-    enable_stamped_cmd_vel: false # 速度消息是否携带时间戳，false 使用 Twist
+    base_frame_id: nav_base      # 仿真中的导航参考坐标系
+    odom_frame_id: odom      # 仿真里程计坐标系
+    map_frame_id: map      # 仿真全局地图坐标系
+    scan_frame_id: nav_sensor      # 仿真扫描原点坐标系
+    update_duration: 0.02      # 仿真位姿更新周期（s）
+    scan_publish_duration: 0.1      # 仿真激光扫描发布周期（s）
+    scan_range_min: 0.05      # 仿真扫描最小量程（m）
+    scan_range_max: 15.0      # 仿真扫描最大量程（m）
+    scan_angle_increment: 0.01745      # 仿真相邻激光束角间隔（rad）
+    scan_use_inf: true      # 无命中射线使用无穷远表示
+    publish_clock: true      # 由仿真器发布 /clock
+    enable_stamped_cmd_vel: false      # 速度消息是否携带时间戳，false 使用 Twist

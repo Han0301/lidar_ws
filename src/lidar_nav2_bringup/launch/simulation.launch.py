@@ -7,13 +7,13 @@ from pathlib import Path
 
 # 启动理想运动仿真中的完整 Nav2 规划、控制和行为闭环
 def generate_launch_description():
-    p = Path(get_package_share_directory('lidar_nav2_bringup')) # 仿真地图与导航参数的安装目录
-    params = LaunchConfiguration('params') # 包含各个 Nav2 节点配置的 YAML 文件
-    servers = [('nav2_map_server', 'map_server'), ('nav2_controller', 'controller_server'), ('nav2_planner', 'planner_server'), ('nav2_behaviors', 'behavior_server'), ('nav2_bt_navigator', 'bt_navigator')] # 需要生命周期管理的标准导航服务器列表
-    actions = [DeclareLaunchArgument('map', default_value=str(p / 'maps/validation.yaml')), DeclareLaunchArgument('params', default_value=str(p / 'config/nav2_sim.yaml'))] # 按顺序收集启动参数声明和实际节点启动动作
+    p = Path(get_package_share_directory('lidar_nav2_bringup'))      # 仿真地图与导航参数的安装目录
+    params = LaunchConfiguration('params')      # 包含各个 Nav2 节点配置的 YAML 文件
+    servers = [('nav2_map_server', 'map_server'), ('nav2_controller', 'controller_server'), ('nav2_planner', 'planner_server'), ('nav2_behaviors', 'behavior_server'), ('nav2_bt_navigator', 'bt_navigator')]      # 需要生命周期管理的标准导航服务器列表
+    actions = [DeclareLaunchArgument('map', default_value=str(p / 'maps/validation.yaml')), DeclareLaunchArgument('params', default_value=str(p / 'config/nav2_sim.yaml'))]      # 按顺序收集启动参数声明和实际节点启动动作
     # 为每个标准服务器创建节点，保持配置集中在 YAML 中
     for package, executable in servers:
-        settings = [params] # 当前服务器的参数文件列表；地图服务器额外接收地图路径
+        settings = [params]      # 当前服务器的参数文件列表；地图服务器额外接收地图路径
         # 把用户选择的二维地图文件传给地图服务器
         if executable == 'map_server':
             settings.append({'yaml_filename': LaunchConfiguration('map')})

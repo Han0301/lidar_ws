@@ -14,8 +14,8 @@ public:
   // 将调平、降采样后的点写入 result 的地面/障碍集合，同时更新可信标志
   void segment(const Cloud::ConstPtr & cloud, Result & result);
 private:
-  Parameters parameters_; // 平面距离、地面方法和障碍高度等配置
-  std::unique_ptr<patchwork::PatchWorkpp> patchwork_; // 复用的 Patchwork++ 分割器，避免逐帧创建
-  double last_height_ = 0.5; // 最近一次可信的垂直地面高度（m）；初值不能替代本帧可信判断
+  Parameters parameters_;      // 平面距离、地面方法和障碍高度等配置
+  std::unique_ptr<patchwork::PatchWorkpp> patchwork_;      // 复用的 Patchwork++ 分割器，避免逐帧创建
+  double last_height_ = 0.5;      // 最近一次可信的垂直地面高度（m）；初值不能替代本帧可信判断
 };
 }

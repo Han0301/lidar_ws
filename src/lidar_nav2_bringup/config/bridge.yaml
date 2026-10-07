@@ -1,8 +1,8 @@
 # 将 LIO 输出接到虚拟导航坐标系，保留传感器真实射线原点
 lio_nav_bridge:
   ros__parameters:
-    use_sim_time: true # 使用 /clock 消息时间，与回放或仿真保持一致
-    gravity_samples: 100 # 建立固定重力参考所需的低角速度 IMU 样本数
-    input_timeout_s: 0.6 # 输入接收超时（墙钟 s），用于诊断或启动门控
-    max_ground_innovation_m: 0.5 # 已建立地面高度后允许的单次高度变化（m）
-    lidar_translation_in_body: [-0.011, -0.02329, 0.04412] # 真实 LiDAR 原点在 body 中的 XYZ 平移（m），用于射线起点
+    use_sim_time: true      # 使用 /clock 消息时间，与回放或仿真保持一致
+    gravity_samples: 100      # 建立固定重力参考所需的低角速度 IMU 样本数
+    input_timeout_s: 0.6      # 输入接收超时（墙钟 s），用于诊断或启动门控
+    max_ground_innovation_m: 0.5      # 已建立地面高度后允许的单次高度变化（m）
+    lidar_translation_in_body: [-0.011, -0.02329, 0.04412]      # 真实 LiDAR 原点在 body 中的 XYZ 平移（m），用于射线起点

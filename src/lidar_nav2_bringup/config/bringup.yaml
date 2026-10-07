@@ -1,17 +1,17 @@
 # 先等待有效时钟、里程计和同一扫描时间的 TF，再激活规划器与代价地图
 lifecycle_manager_planner:
   ros__parameters:
-    use_sim_time: true # 使用 /clock 消息时间，与回放或仿真保持一致
-    autostart: false # 关闭自动激活，由门控确认时钟、位姿与 TF 后启动
-    node_names: [planner_server] # 生命周期管理器负责配置和激活的节点列表
+    use_sim_time: true      # 使用 /clock 消息时间，与回放或仿真保持一致
+    autostart: false      # 关闭自动激活，由门控确认时钟、位姿与 TF 后启动
+    node_names: [planner_server]      # 生命周期管理器负责配置和激活的节点列表
 nav2_startup_gate:
   ros__parameters:
-    use_sim_time: true # 使用 /clock 消息时间，与回放或仿真保持一致
-    input_timeout_s: 0.6 # 输入接收超时（墙钟 s），用于诊断或启动门控
-    global_frame: odom # 该组件用于地图或导航计算的固定参考坐标系
-    base_frame: nav_base # 启动门控检查的虚拟导航参考坐标系
-    odom_topic: /nav/odom # 位姿输入话题，名称须与对应里程计发布端一致
-    manager_service: /lifecycle_manager_planner/manage_nodes # 门控请求生命周期 STARTUP 的服务地址
+    use_sim_time: true      # 使用 /clock 消息时间，与回放或仿真保持一致
+    input_timeout_s: 0.6      # 输入接收超时（墙钟 s），用于诊断或启动门控
+    global_frame: odom      # 该组件用于地图或导航计算的固定参考坐标系
+    base_frame: nav_base      # 启动门控检查的虚拟导航参考坐标系
+    odom_topic: /nav/odom      # 位姿输入话题，名称须与对应里程计发布端一致
+    manager_service: /lifecycle_manager_planner/manage_nodes      # 门控请求生命周期 STARTUP 的服务地址
 rviz_navigation:
   ros__parameters:
-    use_sim_time: true # 使用 /clock 消息时间，与回放或仿真保持一致
+    use_sim_time: true      # 使用 /clock 消息时间，与回放或仿真保持一致
