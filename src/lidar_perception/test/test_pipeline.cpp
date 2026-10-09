@@ -4,8 +4,10 @@
 namespace
 {
 using namespace lidar_perception;
+
 // 向合成场景添加指定坐标和固定强度的测试点
 void point
+
 (
   Cloud & cloud,
   float x,
@@ -17,6 +19,7 @@ void point
   p.x = x; p.y = y; p.z = z; p.intensity = 30;
   cloud.push_back(p);
 }
+
 // 构造地面、16 cm 低障碍与点数更多的高处桌面
 Cloud scene()
 {
@@ -46,6 +49,7 @@ Cloud scene()
   }
   return cloud;
 }
+
 // 验证参考地面选低处地面，并保留 16 cm 障碍而不误选大桌面
 TEST(Perception, LowFloorWinsOverLargerTable)
 {
@@ -69,6 +73,7 @@ TEST(Perception, LowFloorWinsOverLargerTable)
     EXPECT_LT(std::abs(p.z + 1.3F), .16F);
   }
 }
+
 // 验证输入倾斜后经调平变换仍能恢复相同离地高度
 TEST(Perception, TiltedScanGetsSameGroundHeight)
 {
@@ -85,6 +90,7 @@ TEST(Perception, TiltedScanGetsSameGroundHeight)
   ASSERT_TRUE(result.ground_reference_valid);
   EXPECT_NEAR(result.sensor_height, 1.3, .04);
 }
+
 // 验证空间排除只影响标记支路，清除射线仍止于原始遮挡回波
 TEST(Perception, ExcludedReturnStillLimitsClearingRay)
 {
@@ -112,6 +118,7 @@ TEST(Perception, ExcludedReturnStillLimitsClearingRay)
   EXPECT_TRUE(endpoint);
   EXPECT_TRUE(neighbor);
 }
+
 // 验证没有地面证据时保留非地面结果并将参考标为不可信
 TEST(Perception, NoGroundEvidenceRetainsObstacle)
 {
@@ -124,6 +131,7 @@ TEST(Perception, NoGroundEvidenceRetainsObstacle)
   EXPECT_TRUE(result.ground->empty());
   EXPECT_EQ(result.obstacles->size(), 1U);
 }
+
 // 验证不同离地高度都由点云实测，并保留不同高度的凸起
 TEST(Perception, FloorHeightIsMeasuredAndRaisedStepsRemainObstacles)
 {
@@ -171,6 +179,47 @@ TEST(Perception, FloorHeightIsMeasuredAndRaisedStepsRemainObstacles)
       EXPECT_GT(raised, 50U);
     }
   }
+}
+
+
+// 更密集的参考采样仅补充真实支持点，不降低原内点阈值
+TEST(Perception, FineReferenceRecoversSparseNearGround)
+{
+  Cloud cloud;
+  for (int x = 0; x < 30; ++x)
+  {
+    for (int y = 0; y < 15; ++y)
+    {
+      point(cloud, 2.0F + .035F * x, .035F * y, -1.3F);
+    }
+  }
+  Parameters baseline;
+  CloudPipeline coarse(baseline);
+  const auto a = coarse.process(cloud, Eigen::Affine3f::Identity(), std::vector<ExclusionBox>());
+  EXPECT_FALSE(a.ground_reference_valid);
+  Parameters optimized;
+  optimized.reference_voxel_size = .05;
+  CloudPipeline fine(optimized);
+  const auto b = fine.process(cloud, Eigen::Affine3f::Identity(), std::vector<ExclusionBox>());
+  ASSERT_TRUE(b.ground_reference_valid);
+  EXPECT_GE(b.reference_inliers, 60U);
+  EXPECT_NEAR(b.sensor_height, 1.3, .02);
+  EXPECT_FALSE(b.ground->empty());
+}
+
+// 历史高度不能把没有本帧地面支持的点云改为可信
+TEST(Perception, FineReferenceDoesNotTrustHistoryWithoutEvidence)
+{
+  Parameters parameters;
+  parameters.reference_voxel_size = .05;
+  CloudPipeline pipeline(parameters);
+  ASSERT_TRUE(pipeline.process(scene(), Eigen::Affine3f::Identity(), std::vector<ExclusionBox>()).ground_reference_valid);
+  Cloud cloud;
+  point(cloud, 2, 0, .5);
+  const auto result = pipeline.process(cloud, Eigen::Affine3f::Identity(), std::vector<ExclusionBox>());
+  EXPECT_FALSE(result.ground_reference_valid);
+  EXPECT_EQ(result.reference_status, "INSUFFICIENT_CANDIDATES");
+  EXPECT_TRUE(result.ground->empty());
 }
 
 }

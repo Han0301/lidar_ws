@@ -1,0 +1,34 @@
+workspace: /home/h/lidar_ws
+domain: 232
+playback_rate: 1.0
+scan_sample_period_s: 0.5
+plane:
+  seed: 20261008
+  iterations: 400
+  threshold_m: 0.08
+  min_points: 100
+  max_fit_points: 12000
+  discovery_voxel_m: 0.1
+  max_planes: 6
+  roi_tangent_quantiles:
+  - 0.1
+  - 0.9
+  roi_normal_band_m: 0.3
+  max_patch_extent_m: 4.0
+consistency:
+  min_roi_points: 15
+  min_visit_gap_s: 10.0
+  max_adjacent_gap_s: 0.25
+  slow_translation_mps: 0.1
+  slow_rotation_degps: 3.0
+  grid_margin_cells: 2
+prior:
+  navigation: evaluation/lidar_navigation/results/outdoor_paired_ground_final_v2
+  official: evaluation/lidar_navigation/results/official_ispathvalid_20261007
+  trajectories: /home/h/Documents/Codex/2026-10-05/new-chat/work/lidar_bag_eval
+  capture: /home/h/Documents/Codex/2026-10-05/new-chat/work/lidar_navigation/results/outdoor_capture/clouds
+perception_config: /home/h/lidar_ws/src/lidar_perception/config/perception.yaml
+costmap_config: /home/h/lidar_ws/src/lidar_nav2_bringup/config/bag_costmap.yaml
+mapping_enabled: false
+mapping_config: /home/h/lidar_ws/src/lidar_mapping/config/mapping.yaml
+experiment_profile: baseline

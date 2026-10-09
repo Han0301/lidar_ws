@@ -1,0 +1,19 @@
+<?xml version="1.0"?>
+<package format="3">
+  <name>lidar_mapping</name>
+  <version>0.1.0</version>
+  <description>Independent OctoMap adapter and ground-supported global occupancy projection</description>
+  <maintainer email="230283695+Han0301@users.noreply.github.com">Han Zhang</maintainer>
+  <license>BSD-2-Clause</license>
+  <buildtool_depend>ament_cmake</buildtool_depend>
+  <depend>octomap</depend>
+  <depend>eigen</depend>
+  <depend>rclcpp</depend>
+  <depend>sensor_msgs</depend>
+  <depend>nav_msgs</depend>
+  <depend>diagnostic_msgs</depend>
+  <depend>std_srvs</depend>
+  <depend>tf2_ros</depend>
+  <test_depend>ament_cmake_gtest</test_depend>
+  <export><build_type>ament_cmake</build_type></export>
+</package>

@@ -17,7 +17,7 @@ std::vector<Object> ClusterExtractor::extract(const Cloud::ConstPtr & cloud) con
   }
   // 建立搜索树并执行一次欧氏聚类
   auto tree = std::make_shared<pcl::search::KdTree<Point>>();      // 加速障碍点的距离邻域搜索
-  tree->setInputCloud(cloud);
+  // 欧氏聚类器会建立搜索树，避免重复构建同一帧
   pcl::EuclideanClusterExtraction<Point> extraction;      // 把距离可连接的点归为同一几何簇
   extraction.setClusterTolerance(parameters_.cluster_tolerance);
   extraction.setMinClusterSize(parameters_.cluster_min_points);

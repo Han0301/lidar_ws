@@ -1,0 +1,7 @@
+# 对外系统入口的组件配置；路径相对各组件安装目录
+bridge: config/bridge.yaml
+perception: config/perception_dense_reference.yaml
+mapping: config/mapping.yaml
+local_costmap: config/local_costmap_fast.yaml
+planner: config/session_planner.yaml
+bringup: config/bringup.yaml

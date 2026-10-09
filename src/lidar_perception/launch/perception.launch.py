@@ -10,7 +10,7 @@ from launch.substitutions import LaunchConfiguration
 from launch_ros.actions import Node
 
 
-# 组装感知节点及可选 RViz；调平 TF 由外部导航桥接节点提供
+# 组装感知节点及可选 RViz
 def generate_launch_description():
     share = Path(get_package_share_directory('lidar_perception'))      # 感知包的安装资源目录，参数和 RViz 从这里加载
     params = LaunchConfiguration('params')      # 用户可替换的参数文件，节点参数仍保存在 YAML 中

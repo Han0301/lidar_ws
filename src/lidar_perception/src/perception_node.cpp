@@ -5,6 +5,7 @@ namespace lidar_perception
 {
 namespace
 {
+
 // 将 TF 平移与四元数转换为 Eigen 仿射变换，方便逐点坐标计算
 Eigen::Affine3f affine(const geometry_msgs::msg::Transform & transform)
 {
@@ -28,6 +29,7 @@ PerceptionNode::PerceptionNode() : Node("lidar_perception")
   parameters_.min_range = declare_parameter<double>("min_range", parameters_.min_range);
   parameters_.max_range = declare_parameter<double>("max_range", parameters_.max_range);
   parameters_.voxel_size = declare_parameter<double>("voxel_size", parameters_.voxel_size);
+  parameters_.reference_voxel_size = declare_parameter<double>("reference_voxel_size", parameters_.reference_voxel_size);
   parameters_.ground_distance = declare_parameter<double>("ground_distance", parameters_.ground_distance);
   parameters_.ground_guard_distance = declare_parameter<double>("ground_guard_distance", parameters_.ground_guard_distance);
   parameters_.obstacle_min_height = declare_parameter<double>("obstacle_min_height", parameters_.obstacle_min_height);
@@ -38,10 +40,11 @@ PerceptionNode::PerceptionNode() : Node("lidar_perception")
   parameters_.ground_method = declare_parameter<std::string>("ground_method", parameters_.ground_method);
   // 启动时校验距离、地面方法和聚类阈值，拒绝无法运行的配置
   if (parameters_.min_range <= 0.0 || parameters_.max_range <= parameters_.min_range ||
-    parameters_.voxel_size <= 0.0 || parameters_.ground_distance <= 0.0 ||
+    parameters_.voxel_size <= 0.0 || parameters_.reference_voxel_size <= 0.0 || parameters_.ground_distance <= 0.0 ||
     parameters_.ground_guard_distance < parameters_.ground_distance ||
     parameters_.cluster_tolerance <= 0.0 || parameters_.cluster_min_points < 1 ||
     parameters_.obstacle_max_height <= parameters_.obstacle_min_height ||
+
     (parameters_.ground_method != "patchwork" && parameters_.ground_method != "plane"))
   {
     throw std::invalid_argument("Invalid perception parameters");
@@ -82,6 +85,7 @@ PerceptionNode::PerceptionNode() : Node("lidar_perception")
   // 用墙钟定时器重试待处理帧，并在回放暂停时仍检查输入健康
   processing_timer_ = create_wall_timer(std::chrono::milliseconds(10),
     std::bind(&PerceptionNode::process_pending, this));
+
   health_timer_ = create_wall_timer(std::chrono::milliseconds(500), [this]()
     {
       const auto age = std::chrono::duration<double>(std::chrono::steady_clock::now()-last_received_).count();      // 距离上次点云到达的墙钟时长（s）
@@ -98,10 +102,12 @@ void PerceptionNode::receive_cloud(sensor_msgs::msg::PointCloud2::ConstSharedPtr
   received_ = true;
   last_received_ = std::chrono::steady_clock::now();
   pending_.push_back(message);
+  arrival_times_.push_back(last_received_);
   // 只保留三帧，避免缺 TF 时积压点云并不断增加延迟
   while (pending_.size() > 3)
   {
     pending_.pop_front();
+    arrival_times_.pop_front();
     ++dropped_;
   }
   process_pending();
@@ -134,17 +140,22 @@ void PerceptionNode::process_pending()
     if ((now()-rclcpp::Time(message->header.stamp)).seconds() > 0.5)
     {
       pending_.pop_front();
+      arrival_times_.pop_front();
       ++dropped_;
       publish_diagnostic(nullptr, "TF_UNAVAILABLE", 2);
     }
     return;
   }
+  const auto began = arrival_times_.front();
+  queue_tf_ready_ms_ = std::chrono::duration<double, std::milli>(std::chrono::steady_clock::now() - began).count();
+  last_scan_stamp_ns_ = rclcpp::Time(message->header.stamp).nanoseconds();
   std::vector<ExclusionBox> boxes = fixed_boxes_;      // 本帧排除区域集合，先复制固定盒，再追加有效动态盒
   // 只接纳有效且与点云时间相近的区域，过期区域不参与删除
   for (const auto & region : regions_.markers)
   {
     if (region.action != visualization_msgs::msg::Marker::ADD || region.scale.x <= 0.0 ||
       region.scale.y <= 0.0 || region.scale.z <= 0.0 ||
+
       std::abs((rclcpp::Time(message->header.stamp)-rclcpp::Time(region.header.stamp)).seconds()) > region_timeout_)
     {
       continue;
@@ -181,10 +192,12 @@ void PerceptionNode::process_pending()
   pcl::fromROSMsg(*message, cloud);
   const auto result = pipeline_->process(cloud, level_from_body, boxes);      // 本帧感知结果，含可信地面标志和诊断统计
   pending_.pop_front();
+  arrival_times_.pop_front();
   ++processed_;
   auto header = message->header;      // 保留扫描时间，仅改成处理结果的输出坐标系
   header.frame_id = output_frame_;
   publish_result(result, header);
+  callback_to_publish_ms_ = std::chrono::duration<double, std::milli>(std::chrono::steady_clock::now() - began).count();
   // 地面可信时报告 OK；不可信时发布警告，同时门控地图点云
   publish_diagnostic(&result, result.ground_reference_valid ? "OK" : "GROUND_UNCERTAIN",
     result.ground_reference_valid ? 0 : 1);
@@ -192,6 +205,7 @@ void PerceptionNode::process_pending()
 
 // 统一转换并发布点云，输出继承扫描时间戳和指定坐标系
 void PerceptionNode::publish_cloud
+
 (
   const Cloud & cloud,
   const std_msgs::msg::Header & header,
@@ -269,6 +283,7 @@ void PerceptionNode::publish_result(const Result & result, const std_msgs::msg::
 
 // 将累计帧数和可用的单帧统计封装成标准 ROS 诊断消息
 void PerceptionNode::publish_diagnostic
+
 (
   const Result * result,
   const std::string & state,
@@ -295,6 +310,9 @@ void PerceptionNode::publish_diagnostic
   // 只有完成了流水线处理才附带单帧点数、高度和耗时
   if (result)
   {
+    add("scan_stamp_ns", std::to_string(last_scan_stamp_ns_));
+    add("queue_tf_ready_ms", std::to_string(queue_tf_ready_ms_));
+    add("callback_to_publish_ms", std::to_string(callback_to_publish_ms_));
     add("input_points", std::to_string(result->input_points));
     add("valid_points", std::to_string(result->valid_points));
     add("operator_points", std::to_string(result->operator_points));
@@ -302,7 +320,14 @@ void PerceptionNode::publish_diagnostic
     add("obstacle_points", std::to_string(result->obstacles->size()));
     add("clusters", std::to_string(result->objects.size()));
     add("sensor_height_m", std::to_string(result->sensor_height));
+    add("reference_candidates", std::to_string(result->reference_candidates));
+    add("reference_inliers", std::to_string(result->reference_inliers));
+    add("reference_status", result->reference_status);
     add("processing_ms", std::to_string(result->processing_ms));
+    for (const auto & stage : result->stage_ms)
+    {
+      add(stage.first, std::to_string(stage.second));
+    }
   }
   array.status.push_back(status);
   diagnostic_pub_->publish(array);

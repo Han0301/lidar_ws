@@ -3,6 +3,7 @@
 #include <chrono>
 #include <cmath>
 #include <memory>
+#include <map>
 #include <limits>
 #include <string>
 #include <vector>
@@ -21,6 +22,7 @@ struct Parameters
   double min_range = 0.45;      // 有效点到 body 原点的最小三维距离（m）
   double max_range = 15.0;      // 有效点到 body 原点的最大三维距离（m）
   double voxel_size = 0.10;      // 体素降采样的格子边长（m）
+  double reference_voxel_size = 0.10;      // 参考平面的独立采样分辨率（m），默认与原分类采样一致
   double ground_distance = 0.08;      // 平面拟合及近场地面判断的距离阈值（m）
   double ground_guard_distance = 0.16;      // 局部地面到参考平面允许的最大偏差（m）
   double obstacle_min_height = 0.12;      // 保留障碍点的最小离地高度（m）
@@ -60,6 +62,10 @@ struct Result
   std::size_t operator_points = 0;      // 落入排除区域的点数，并非人体识别数量
   double sensor_height = 0.0;      // 输出坐标系原点到参考地面的垂直高度估计（m）
   bool ground_reference_valid = false;      // 本帧是否成功取得可信参考平面，控制地图输入发布
+  std::size_t reference_candidates = 0;      // 近场低处参考候选点数
+  std::size_t reference_inliers = 0;      // 参考拟合的实际内点数
+  std::string reference_status = "EMPTY";      // 地面参考失败原因或 OK
   double processing_ms = 0.0;      // 完整感知流水线的单帧墙钟耗时（ms）
+  std::map<std::string, double> stage_ms;      // 独立阶段墙钟耗时，不含节点转换与发布
 };
 }

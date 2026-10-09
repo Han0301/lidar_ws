@@ -2,6 +2,7 @@
 
 namespace lidar_perception
 {
+
 // 初始化 Patchwork++；固定参考高度仅用于输入归一化，不替代实测高度
 GroundSegmenter::GroundSegmenter(const Parameters & parameters) : parameters_(parameters)
 {
@@ -18,7 +19,13 @@ GroundSegmenter::GroundSegmenter(const Parameters & parameters) : parameters_(pa
 }
 
 // 从调平点云估计可信参考地面，再分割地面与障碍并写入 result
-void GroundSegmenter::segment(const Cloud::ConstPtr & cloud, Result & result)
+void GroundSegmenter::segment
+
+(
+  const Cloud::ConstPtr & cloud,
+  Result & result,
+  const Cloud::ConstPtr & reference_cloud
+)
 {
   if (cloud->empty())
   {
@@ -26,7 +33,8 @@ void GroundSegmenter::segment(const Cloud::ConstPtr & cloud, Result & result)
   }
   // 只从近场低处区域拟合参考，减少远处稀疏点和高处物体干扰
   auto candidates = std::make_shared<Cloud>();      // 用于估计整体参考地面的近场、低处点
-  for (const auto & point : *cloud)
+  const auto & reference = reference_cloud ? reference_cloud : cloud;      // 参考拟合可使用更密集点云，分类与聚类仍使用原体素
+  for (const auto & point : *reference)
   {
     const double range = std::hypot(point.x, point.y);      // 点在水平面的距离（m），不同于流水线的三维距离
     if (range > 1.0 && range < 7.0 && point.z < 0.25 && point.z > -3.5)
@@ -34,6 +42,8 @@ void GroundSegmenter::segment(const Cloud::ConstPtr & cloud, Result & result)
       candidates->push_back(point);
     }
   }
+  result.reference_candidates = candidates->size();
+  result.reference_status = "INSUFFICIENT_CANDIDATES";
   Eigen::Vector3f normal(0.0F, 0.0F, 1.0F);      // 归一化且朝上的参考平面法向量
   double plane_d = last_height_;      // 平面 normal·point + plane_d = 0 的常数项（m）
   // 候选足够时才拟合本帧参考；历史高度本身不能使本帧变可信
@@ -69,6 +79,8 @@ void GroundSegmenter::segment(const Cloud::ConstPtr & cloud, Result & result)
     pcl::PointIndices indices;      // 落在拟合平面上的内点索引
     pcl::ModelCoefficients coefficients;      // 平面原始系数 a、b、c、d，后面统一归一化
     segmentation.segment(indices, coefficients);
+    result.reference_inliers = indices.indices.size();
+    result.reference_status = "INSUFFICIENT_INLIERS";
     // 内点足够且系数完整时，检查方向和高度是否在配置支持范围内
     if (indices.indices.size() >= 60 && coefficients.values.size() == 4)
     {
@@ -80,8 +92,10 @@ void GroundSegmenter::segment(const Cloud::ConstPtr & cloud, Result & result)
       const double height = plane_d / normal.z();      // 坐标原点到参考平面的垂直高度（m），不是法向距离
       // 这是参考平面的可信门控，不是机器人的坡度通行能力判断
       result.ground_reference_valid = normal.z() > 0.95 && height > -0.20 && height < 3.0;
+      result.reference_status = normal.z() <= 0.95 ? "INVALID_NORMAL" : "INVALID_HEIGHT";
       if (result.ground_reference_valid)
       {
+        result.reference_status = "OK";
         last_height_ = height;
       }
     }
@@ -131,6 +145,7 @@ void GroundSegmenter::segment(const Cloud::ConstPtr & cloud, Result & result)
     }
     // 纯平面模式和近场区域直接使用参考平面距离，弥补近处局部分割空缺
     if (result.ground_reference_valid &&
+
       (parameters_.ground_method == "plane" || std::hypot(point.x, point.y) < 1.2))
     {
       is_ground[i] = std::abs(signed_distance) < parameters_.ground_distance;

@@ -1,0 +1,23 @@
+# 仅参考地面加密采样；分类体素及其他阈值维持原值
+lidar_perception:
+  ros__parameters:
+    use_sim_time: true
+    input_topic: /cloud_registered_body
+    output_frame: perception_sensor
+    min_range: 0.45
+    max_range: 15.0
+    voxel_size: 0.1
+    ground_method: patchwork
+    ground_distance: 0.08
+    ground_guard_distance: 0.16
+    obstacle_min_height: 0.12
+    obstacle_max_height: 2.5
+    cluster_tolerance: 0.3
+    cluster_min_points: 6
+    cluster_max_points: 30000
+    input_timeout_s: 0.6
+    operator_region_timeout_s: 0.3
+    reference_voxel_size: 0.05
+rviz_perception:
+  ros__parameters:
+    use_sim_time: true

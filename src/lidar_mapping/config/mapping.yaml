@@ -1,0 +1,17 @@
+lidar_mapping:
+  ros__parameters:
+    global_frame: odom
+    incremental_inner_updates: true
+    incremental_projection: true
+    integration_rate: 2.0
+    max_grid_cells: 4000000
+    max_pending_frames: 64
+    max_range: 15.0
+    max_ray_endpoints: 0
+    min_ground_observations: 2
+    output_prefix: /tmp/lidar_global_map
+    pairing_queue_depth: 20
+    prune_interval: 0
+    publish_rate: 1.0
+    resolution: 0.1
+    sensor_frame: nav_sensor

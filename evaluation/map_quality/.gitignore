@@ -1,0 +1,8 @@
+# 工具和配置入库，采集数据、实测报告和现场图片保持本地
+results/
+RESULTS_*.md
+OPTIMIZATION_*.md
+PERFORMANCE_*.md
+optimization_figures/
+__pycache__/
+*.pyc

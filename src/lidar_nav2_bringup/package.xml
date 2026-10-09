@@ -6,6 +6,7 @@
   <maintainer email="230283695+Han0301@users.noreply.github.com">Han Zhang</maintainer>
   <license>BSD-2-Clause</license>
   <buildtool_depend>ament_cmake</buildtool_depend>
+  <buildtool_depend>ament_cmake_python</buildtool_depend>
   <depend>eigen</depend>
   <depend>rclcpp</depend>
   <depend>sensor_msgs</depend>
@@ -17,7 +18,8 @@
   <exec_depend>launch</exec_depend>
   <exec_depend>rviz2</exec_depend>
   <exec_depend>rclpy</exec_depend>
-  <exec_depend>nav2_costmap_2d</exec_depend>
+  <depend>nav2_costmap_2d</depend>
+  <depend>lifecycle_msgs</depend>
   <exec_depend>nav2_controller</exec_depend>
   <exec_depend>nav2_planner</exec_depend>
   <exec_depend>nav2_navfn_planner</exec_depend>
@@ -29,6 +31,10 @@
   <exec_depend>nav2_loopback_sim</exec_depend>
   <exec_depend>nav2_simple_commander</exec_depend>
   <exec_depend>lidar_perception</exec_depend>
+  <exec_depend>lidar_mapping</exec_depend>
+  <exec_depend>fast_lio</exec_depend>
+  <exec_depend>livox_ros_driver2</exec_depend>
+  <exec_depend>python3-yaml</exec_depend>
   <exec_depend>ament_index_python</exec_depend>
   <exec_depend>nav2_msgs</exec_depend>
   <exec_depend>nav2_common</exec_depend>

@@ -6,7 +6,8 @@ import time
 
 import rclpy
 from nav2_msgs.srv import ManageLifecycleNodes
-from nav_msgs.msg import Odometry
+from nav_msgs.msg import Odometry, OccupancyGrid
+from rclpy.qos import QoSProfile, DurabilityPolicy
 from rclpy.node import Node
 from rclpy.executors import ExternalShutdownException
 from rclpy.time import Time
@@ -18,6 +19,10 @@ class NavigationStartupGate(Node):
     # 读取门控条件并建立 TF、位姿订阅、生命周期服务和墙钟检查定时器
     def __init__(self):
         super().__init__('nav2_startup_gate')
+        self.require_map = self.declare_parameter('require_map', False).value
+        self.map_ready = False
+        self.map_subscription = self.create_subscription(OccupancyGrid, '/map', self.receive_map,
+            QoSProfile(depth=1, durability=DurabilityPolicy.TRANSIENT_LOCAL))
         self.timeout = self.declare_parameter('input_timeout_s', 0.6).value      # 位姿到达和时间戳的新鲜度上限（s）
         self.global_frame = self.declare_parameter('global_frame', 'odom').value      # 导航地图所用的全局参考坐标
         self.base_frame = self.declare_parameter('base_frame', 'nav_base').value      # 地图需要跟踪的虚拟平面参考坐标
@@ -37,6 +42,11 @@ class NavigationStartupGate(Node):
         # 使用单调墙钟检查，第一条 /clock 到达前也能运行，周期为 0.1 s
         self.timer = self.create_timer(0.1, self.check,
                                       clock=rclpy.clock.Clock(clock_type=rclpy.clock.ClockType.STEADY_TIME))
+
+    def receive_map(self, message):
+        self.map_ready = (message.header.frame_id == self.global_frame and
+                          message.info.width > 0 and message.info.height > 0 and
+                          len(message.data) == message.info.width * message.info.height)
 
     # 保存最新位姿和墙钟到达时间，供启动条件检查
     def receive(self, message):
@@ -90,6 +100,9 @@ class NavigationStartupGate(Node):
         # TF 必须覆盖同一扫描时刻，不能用任意最新变换代替
         if not self.tf_buffer.can_transform(self.global_frame, self.base_frame, stamp):
             self.waiting('navigation TF not available at the odometry timestamp')
+            return
+        if self.require_map and not self.map_ready:
+            self.waiting('no complete session map in the configured frame')
             return
         # 管理器服务出现后才发请求，避免启动阶段服务尚未创建
         if not self.client.service_is_ready():

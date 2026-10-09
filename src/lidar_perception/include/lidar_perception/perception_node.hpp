@@ -15,6 +15,7 @@
 
 namespace lidar_perception
 {
+
 // 负责 ROS 参数、点云/区域接收、时间戳 TF 查询、发布与健康诊断
 class PerceptionNode : public rclcpp::Node
 {
@@ -55,6 +56,10 @@ private:
   visualization_msgs::msg::MarkerArray regions_;      // 最近收到的动态区域描述，使用时再检查时效和 TF
   std::deque<sensor_msgs::msg::PointCloud2::ConstSharedPtr> pending_;      // 等待对应 TF 的点云队列，最多保留三帧
   std::chrono::steady_clock::time_point last_received_;      // 上次收到点云的单调墙钟时间
+  std::deque<std::chrono::steady_clock::time_point> arrival_times_;
+  int64_t last_scan_stamp_ns_ = 0;
+  double queue_tf_ready_ms_ = 0.0;
+  double callback_to_publish_ms_ = 0.0;
   bool received_ = false;      // 是否曾收到输入，用于区分无数据和输入过期
   std::size_t processed_ = 0;      // 已经完成流水线处理的帧数
   std::size_t dropped_ = 0;      // 因队列溢出或 TF 等待超时而丢弃的帧数

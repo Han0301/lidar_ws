@@ -2,8 +2,10 @@
 #include <fstream>
 #include <iostream>
 #include <filesystem>
+#include <iomanip>
 
 namespace fs = std::filesystem;
+
 void save(const fs::path & path, const lidar_perception::Cloud & cloud)
 {
   std::ofstream out(path, std::ios::binary);
@@ -16,17 +18,19 @@ void save(const fs::path & path, const lidar_perception::Cloud & cloud)
     out.write(reinterpret_cast<const char *>(values), sizeof(values));
   }
 }
+
 int main(int argc, char ** argv)
 {
-  if (argc != 6)
+  if (argc != 6 && argc != 7)
   {
-    std::cerr << "input_directory output_directory voxel method mask\n";
+    std::cerr << "input_directory output_directory voxel method mask [reference_voxel]\n";
     return 2;
   }
   fs::create_directories(argv[2]);
   lidar_perception::Parameters parameters;
   parameters.voxel_size = std::stod(argv[3]);
   parameters.ground_method = argv[4];
+  parameters.reference_voxel_size = argc == 7 ? std::stod(argv[6]) : parameters.voxel_size;
   lidar_perception::CloudPipeline pipeline(parameters);
   std::vector<lidar_perception::ExclusionBox> boxes;
   if (std::string(argv[5]) == "candidate")
@@ -46,7 +50,7 @@ int main(int argc, char ** argv)
   }
   std::sort(paths.begin(), paths.end());
   std::ofstream metrics(fs::path(argv[2]) / "metrics.csv");
-  metrics << "frame,input,valid,removed,ground,obstacles,clusters,height,ground_valid,ms\n";
+  metrics << "frame,input,valid,removed,ground,obstacles,clusters,height,ground_valid,ms,reference_candidates,reference_inliers,reference_status\n";
   for (const auto & path : paths)
   {
     std::ifstream input(path, std::ios::binary);
@@ -69,9 +73,17 @@ int main(int argc, char ** argv)
       cloud.push_back(p);
     }
     auto result = pipeline.process(cloud, level, boxes);
-    metrics << path.stem().string() << ',' << result.input_points << ',' << result.valid_points << ',' << result.operator_points << ',' << result.ground->size() << ',' << result.obstacles->size() << ',' << result.objects.size() << ',' << result.sensor_height << ',' << result.ground_reference_valid << ',' << result.processing_ms << '\n';
+    metrics << path.stem().string() << ',' << result.input_points << ',' << result.valid_points << ',' << result.operator_points << ',' << result.ground->size() << ',' << result.obstacles->size() << ',' << result.objects.size() << ',' << result.sensor_height << ',' << result.ground_reference_valid << ',' << result.processing_ms << ',' << result.reference_candidates << ',' << result.reference_inliers << ',' << result.reference_status << '\n';
     save(fs::path(argv[2]) / (path.stem().string()+"_ground.bin"), *result.ground);
     save(fs::path(argv[2]) / (path.stem().string()+"_obstacles.bin"), *result.obstacles);
     save(fs::path(argv[2]) / (path.stem().string()+"_removed.bin"), *result.removed);
+    save(fs::path(argv[2]) / (path.stem().string()+"_clearing.bin"), *result.clearing);
+    std::ofstream objects(fs::path(argv[2]) / (path.stem().string() + "_objects.csv"));
+    objects << std::setprecision(9);
+    for (const auto & object : result.objects)
+    {
+      objects << object.center.x() << ',' << object.center.y() << ',' << object.center.z() << ','
+        << object.size.x() << ',' << object.size.y() << ',' << object.size.z() << ',' << object.points << '\n';
+    }
   }
 }

@@ -1,0 +1,36 @@
+full:
+  cache: false
+  prune_interval: 0
+  max_ray_endpoints: 0
+  frame_stride: 1
+  incremental_inner: false
+cache:
+  cache: true
+  prune_interval: 0
+  max_ray_endpoints: 0
+  frame_stride: 1
+  incremental_inner: false
+prune_cache:
+  cache: true
+  prune_interval: 20
+  max_ray_endpoints: 0
+  frame_stride: 1
+  incremental_inner: false
+native_cache:
+  cache: true
+  prune_interval: 0
+  max_ray_endpoints: 0
+  frame_stride: 1
+  incremental_inner: true
+ray_budget_2000:
+  cache: true
+  prune_interval: 0
+  max_ray_endpoints: 2000
+  frame_stride: 1
+  incremental_inner: true
+half_integration:
+  cache: true
+  prune_interval: 0
+  max_ray_endpoints: 0
+  frame_stride: 2
+  incremental_inner: true
