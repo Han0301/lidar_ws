@@ -37,7 +37,6 @@ bool OccupancyMapper::in_range(const octomap::point3d & origin, const octomap::p
 
 // 同一帧命中优先于穿越射线，清除只使用真实测量终点
 void OccupancyMapper::integrate
-
 (
   const octomap::point3d & origin,
   const std::vector<octomap::point3d> & returns,

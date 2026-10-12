@@ -24,6 +24,7 @@ def perception_nodes(bridge, perception):
 
 
 def system(context):
+    # 读取配置与运行模式
     path = Path(LaunchConfiguration('profile').perform(context)).expanduser()
     cfg = yaml.safe_load(path.read_text())
     mode = LaunchConfiguration('mode').perform(context)
@@ -33,21 +34,27 @@ def system(context):
     if LaunchConfiguration('source').perform(context) not in ['bag', 'sensor']:
         raise ValueError('source must be bag or sensor')
     overrides = {'use_sim_time': sim}
+
     def file(key, package):
         value = Path(cfg[key]).expanduser()
         return str(value if value.is_absolute() else share(package)/value)
+    
     actions = []
+    # 启动fast_lio定位节点
     if LaunchConfiguration('frontend').perform(context).lower() == 'true':
         actions.append(IncludeLaunchDescription(
             PythonLaunchDescriptionSource(str(share('fast_lio')/'launch/mapping.launch.py')),
             launch_arguments={'config_path': str(share('fast_lio')/'config'),
                               'config_file': 'mid360.yaml', 'use_sim_time': str(sim).lower(),
                               'rviz': 'false'}.items()))
+    # 启动雷达驱动
     if not sim:
         actions.append(IncludeLaunchDescription(PythonLaunchDescriptionSource(
             str(share('livox_ros_driver2')/'launch_ROS2/msg_MID360_launch.py'))))
+    # 启动感知节点
     actions.extend(perception_nodes([file('bridge', 'lidar_nav2_bringup'), overrides],
                                    [file('perception', 'lidar_perception'), overrides]))
+    # 启动地图服务器
     map_yaml = LaunchConfiguration('map').perform(context)
     if mode == 'planning' and map_yaml and not sim:
         raise ValueError('Saved odom map requires verified session alignment; sensor saved-map mode needs a localization backend')

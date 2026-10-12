@@ -20,7 +20,6 @@ GroundSegmenter::GroundSegmenter(const Parameters & parameters) : parameters_(pa
 
 // 从调平点云估计可信参考地面，再分割地面与障碍并写入 result
 void GroundSegmenter::segment
-
 (
   const Cloud::ConstPtr & cloud,
   Result & result,
